@@ -1,8 +1,9 @@
 import re
 import os
 from docx import Document
+from multiprocessing import Pool, cpu_count
 
-PATH = "./knesset_protocols"
+PATH = r"./knesset_protocols"
 
 HEBREW_UNITS = {
     "אפס": 0,
@@ -43,6 +44,26 @@ HEBROW_HUNDREDS = {
 }
 
 
+def process_file(filename):
+    """Process a single file and return a dictionary with protocol info or None."""
+    result = FileParser(filename).parse_filename()
+    if result:
+        knesset_number, protocol_type = result
+        protocol = Protocol(knesset_number, protocol_type, filename)
+        if protocol.protocol_number is not None:
+            return {
+                "knesset_number": protocol.knesset_number,
+                "protocol_type": protocol.protocol_type,
+                "protocol_number": protocol.protocol_number,
+                "chair": protocol.yor_hankest,
+                "filename": filename
+            }
+    else:
+        print(f"Filename: {filename} => Invalid format")
+    return None
+
+
+
 class FileLoader:
     """Class to load files from a specified directory."""
     def __init__(self, path:str = PATH):
@@ -79,6 +100,10 @@ class Protocol:
         self.protocol_type = protocol_type
         self.filepath = os.path.join(PATH, filename)
         self.protocol_number = self._extract_protocol_number()
+        if self.protocol_number is None:
+            return
+        else:
+            self.yor_hankest = self._extract_yor()
     
 
 
@@ -88,7 +113,7 @@ class Protocol:
             self.doc = Document(self.filepath)
         except Exception as e:
             print(f"Error opening {self.filepath}: {e}")
-            return -1
+            return None
 
         text = "\n".join(p.text for p in self.doc.paragraphs)
 
@@ -153,8 +178,21 @@ class Protocol:
 
         return total if total > 0 else -1
 
-  
-        
+    
+    def _extract_yor(self):
+        """Extract only the first chairperson's full name from the document."""
+        text = "\n".join(p.text for p in self.doc.paragraphs)
+
+
+        match = re.search(r'היו"ר\s+([א-ת\"\'״׳\.\-\s]+?)(:|\n|מוזמנים|$)', text)
+        if match:
+            full_name = match.group(1).strip()
+
+            for line in full_name.splitlines():
+                line = line.strip()
+                if line:
+                    return line
+        return "Unknown"
 
 class ProtocolsCollection:
     def __init__(self):
@@ -166,14 +204,16 @@ class ProtocolsCollection:
 
 if __name__ == "__main__":
     fl = FileLoader()
-    pc = ProtocolsCollection()
-    for filename in fl.ListFiles():
-        result = FileParser(filename).parse_filename()
-        if result:
-            knesset_number, protocol_type = result
-            pc.add_protocol(Protocol(knesset_number, protocol_type, filename))
-        else:
-            print(f"Filename: {filename} => Invalid format")
-    
-    for protocol in pc.protocols:
-        print(f"Knesset: {protocol.knesset_number}, Type: {protocol.protocol_type}, Protocol Number: {protocol.protocol_number}","File name:", protocol.filepath, "Chair Name:", protocol.chair_name)
+    files = fl.ListFiles()
+
+
+    with Pool(processes=cpu_count()) as pool:
+        protocols = pool.map(process_file, files)
+
+
+    protocols = [p for p in protocols if p is not None]
+
+
+    for p in protocols:
+        if p:
+            print(f"Knesset: {p['knesset_number']}, Type: {p['protocol_type']}, Protocol Number: {p['protocol_number']}, Chair: {p['chair']}, file: {p['filename']}")
