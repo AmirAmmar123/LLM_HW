@@ -2,8 +2,25 @@ import re
 import os
 from docx import Document
 from multiprocessing import Pool, cpu_count
+import json
+
+
 
 PATH = r"./knesset_protocols"
+
+
+INVALID_TALKERS_NAMES = {
+    "חברי הוועדה",
+    "מוזמנים",
+    "קריאה",
+    "אני מבקש לשאול"
+}
+
+GET_RID_OF_SUFFIX ={
+    'היו"ר',
+    'היו”ר',
+}
+
 
 HEBREW_UNITS = {
     "אפס": 0,
@@ -56,7 +73,8 @@ def process_file(filename):
                 "protocol_type": protocol.protocol_type,
                 "protocol_number": protocol.protocol_number,
                 "chair": protocol.yor_hankest,
-                "filename": filename
+                "filename": filename,
+                "Speakers": protocol.colon_sentences
             }
     else:
         print(f"Filename: {filename} => Invalid format")
@@ -102,10 +120,9 @@ class Protocol:
         self.protocol_number = self._extract_protocol_number()
         if self.protocol_number is None:
             return
-        else:
-            self.yor_hankest = self._extract_yor()
-    
-
+        
+        self.yor_hankest = self._extract_yor()
+        self.colon_sentences = self._extract_colon_sentences()
 
     def _extract_protocol_number(self):
         """Extract the protocol number from the document."""
@@ -129,6 +146,7 @@ class Protocol:
 
         return -1
     
+
     def _hebrew_number_to_int(self, text):
         """Convert Hebrew number words into integers"""
 
@@ -194,6 +212,46 @@ class Protocol:
                     return line
         return "Unknown"
 
+
+    def _extract_colon_sentences(self):
+        """
+        Extract paragraphs that:
+        - end with a colon ':'
+        - contain at least one run that is bold OR underlined
+        """
+        try:
+            doc = self.doc if hasattr(self, "doc") else Document(self.filepath)
+        except Exception as e:
+            print(f"Error opening {self.filepath} for colon sentences: {e}")
+            return []
+
+        results = []
+        for para in doc.paragraphs:
+            text = para.text.strip()
+            if not text.endswith(':'):
+                continue
+
+            clean_text = text.rstrip(':').strip()
+            if clean_text not in INVALID_TALKERS_NAMES:
+                for suffix in GET_RID_OF_SUFFIX:
+                    clean_text = clean_text.replace(suffix, "").strip()
+                    
+                clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
+                clean_text = " ".join(clean_text.split())
+                results.append(clean_text)
+
+        seen = set()
+        unique = []
+        for s in results:
+            if len(s) < 50 and len(s) > 5 and  s not in seen :
+                seen.add(s)
+                unique.append(s)
+
+        return unique
+
+
+        
+
 class ProtocolsCollection:
     def __init__(self):
         self.protocols = []
@@ -202,18 +260,20 @@ class ProtocolsCollection:
         self.protocols.append(protocol)
 
 
+
+
 if __name__ == "__main__":
     fl = FileLoader()
     files = fl.ListFiles()
 
 
-    with Pool(processes=cpu_count()) as pool:
-        protocols = pool.map(process_file, files)
+    # with Pool(processes=cpu_count()) as pool:
+    #     protocols = pool.map(process_file, files)
 
-
+    protocols = [process_file(f) for f in files]
     protocols = [p for p in protocols if p is not None]
 
 
     for p in protocols:
         if p:
-            print(f"Knesset: {p['knesset_number']}, Type: {p['protocol_type']}, Protocol Number: {p['protocol_number']}, Chair: {p['chair']}, file: {p['filename']}")
+            print(f"Knesset: {p['knesset_number']}, Type: {p['protocol_type']}, Protocol Number: {p['protocol_number']}, Chair: {p['chair']}, file: {p['filename']}, Speakers: {p['Speakers']}")
