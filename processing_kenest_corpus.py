@@ -10,6 +10,10 @@ PATH = r"./knesset_protocols"
 
 
 INVALID_TALKERS_NAMES = {
+    'חברי כנסת',
+    'משתתפים באמצעים מקוונים',
+    'מנהלות הוועדה',
+    'מסקנות הוועדה'
     "חברי הוועדה",
     "מוזמנים",
     "קריאה",
@@ -22,12 +26,15 @@ INVALID_TALKERS_NAMES = {
     'באמצעים מקוונים',
     'רישום פרלמנטרי',
     'באמצעים מקוונים',
+    '',
+    'חברי הוועדה'
 
 }
 
 GET_RID_OF_SUFFIX ={
     'יו"ר ועדת הכנסת',
-    'שר החינוך'
+    'שר החינוך',
+    'שר החינוך '
     'היו"ר',
     'היו”ר',
     'לאיכות הסביבה'
@@ -202,9 +209,24 @@ GET_RID_OF_SUFFIX ={
     'רשם הישיבה',
     'השר',
     'השרה',
-    'החינוך, התרבות והספורט'
-    'התרבות והספורט'
-    ','
+    'החינוך, התרבות והספורט',
+    'התרבות והספורט',
+    ',',
+    'מזכירת הכנסת',
+    'לאיכות הסביבה',
+    'לאזרחים ותיקים',
+    'שר המודיעין',
+    'ופיתוח הכפר',
+    'ראש הממשלה',
+    'שר התשתיות',
+    'שר העבודה והרווחה',
+    'סגן',
+    'סגנית',
+    'שרת המשפטים',
+    'ופיתוח הכפר',
+    'עו"ד',
+    'הלאומיות',
+    'שר התשתיות'
 
 }
 
@@ -439,6 +461,11 @@ class Protocol:
                 seen.add(s)
                 unique.append(s)
 
+        
+        for s in unique:
+            if s in INVALID_TALKERS_NAMES:
+                unique.remove(s)
+
         return unique
 
 
@@ -459,11 +486,11 @@ if __name__ == "__main__":
     files = fl.ListFiles()
 
 
-    with Pool(processes=cpu_count()) as pool:
-        protocols = pool.map(process_file, files)
+    # with Pool(processes=cpu_count()) as pool:
+    #     protocols = pool.map(process_file, files)
 
-    # protocols = [process_file(f) for f in files]
-    # protocols = [p for p in protocols if p is not None]
+    protocols = [process_file(f) for f in files]
+    protocols = [p for p in protocols if p is not None]
 
 
     for p in protocols:
