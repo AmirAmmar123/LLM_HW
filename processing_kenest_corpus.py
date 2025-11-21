@@ -1,6 +1,7 @@
 import re
 import os
 from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from multiprocessing import Pool, cpu_count
 import json
 
@@ -283,7 +284,8 @@ def process_file(filename):
                 "protocol_number": protocol.protocol_number,
                 "chair": protocol.yor_hankest,
                 "filename": filename,
-                "Speakers": protocol.colon_sentences
+                "Speakers": protocol.colon_sentences,
+                "Speeches": protocol.speeches
             }
     else:
         print(f"Filename: {filename} => Invalid format")
@@ -332,6 +334,7 @@ class Protocol:
         
         self.yor_hankest = self._extract_yor()
         self.colon_sentences = self._extract_colon_sentences()
+        self.speeches = self._extract_speeches()
 
     def _extract_protocol_number(self):
         """Extract the protocol number from the document."""
@@ -422,6 +425,31 @@ class Protocol:
         return "Unknown"
 
 
+    def _normalize_speaker_from_text(self, text: str):
+        """Return cleaned speaker name if text represents a speaker line."""
+        candidate = text.strip()
+        if not candidate.endswith(':'):
+            return None
+
+        candidate = candidate.rstrip(':').strip()
+        if candidate in INVALID_TALKERS_NAMES:
+            return None
+
+        clean_text = candidate
+        for suffix in GET_RID_OF_SUFFIX:
+            clean_text = clean_text.replace(suffix, "").strip()
+
+        clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
+        clean_text = " ".join(clean_text.split())
+        if not clean_text or clean_text in INVALID_TALKERS_NAMES:
+            return None
+
+        parts = [p.strip() for p in clean_text.split(' ') if p.strip()]
+        if len(parts) < 2 or len(parts) > 5:
+            return None
+
+        return " ".join(parts)
+
     def _extract_colon_sentences(self):
         """
         Extract paragraphs that:
@@ -436,23 +464,12 @@ class Protocol:
 
         results = []
         for para in doc.paragraphs:
-            text = para.text.strip()
-            if not text.endswith(':'):
+            if self._is_heading_paragraph(para):
                 continue
-
-            clean_text = text.rstrip(':').strip()
-            if clean_text not in INVALID_TALKERS_NAMES:
-                for suffix in GET_RID_OF_SUFFIX:
-                    clean_text = clean_text.replace(suffix, "").strip()
-                    
-                clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
-                clean_text = " ".join(clean_text.split())
-
-                parts = [p.strip() for p in clean_text.split(' ') if p.strip()]
-
-                if len(parts) >= 2 and len(parts) <= 5:
-                    clean_text = " ".join(parts)
-                    results.append(clean_text)
+            text = para.text.strip()
+            speaker_name = self._normalize_speaker_from_text(text)
+            if speaker_name:
+                results.append(speaker_name)
 
         seen = set()
         unique = []
@@ -461,12 +478,137 @@ class Protocol:
                 seen.add(s)
                 unique.append(s)
 
-        
-        for s in unique:
-            if s in INVALID_TALKERS_NAMES:
-                unique.remove(s)
-
         return unique
+
+    def _extract_speeches(self):
+        """Attach textual content to the speakers identified in the document."""
+        try:
+            doc = self.doc if hasattr(self, "doc") else Document(self.filepath)
+        except Exception as e:
+            print(f"Error opening {self.filepath} for speeches: {e}")
+            return []
+
+        speeches = []
+        current_speaker = None
+        current_chunks = []
+
+        def flush_current():
+            if current_speaker and current_chunks:
+                full_text = " ".join(current_chunks).strip()
+                speeches.append({
+                    "speaker": current_speaker,
+                    "text": full_text,
+                    "sentences": self._split_into_sentences(full_text)
+                })
+
+        for para in doc.paragraphs:
+            if self._is_heading_paragraph(para):
+                continue
+            text = para.text.strip()
+            if not text:
+                continue
+
+            speaker_name = self._normalize_speaker_from_text(text)
+            if speaker_name:
+                flush_current()
+                current_speaker = speaker_name
+                current_chunks = []
+                continue
+
+            if current_speaker:
+                current_chunks.append(text)
+
+        flush_current()
+        return speeches
+
+    def _is_single_token_enum(self, text: str, idx: int):
+        """Detect enumerations like 'א.' or '1.' to avoid sentence splits."""
+        j = idx - 1
+        while j >= 0 and text[j].isspace():
+            j -= 1
+        if j < 0:
+            return False
+        start = j
+        while start - 1 >= 0 and text[start - 1].isalpha():
+            start -= 1
+        token = text[start:j + 1]
+        if len(token) == 1 and (start == 0 or text[start - 1].isspace() or text[start - 1] in '(["\''):
+            return True
+        if token.isdigit():
+            if start == 0 or text[start - 1].isspace() or text[start - 1] in '(["\'':
+                return True
+        return False
+
+    def _split_into_sentences(self, text: str):
+        """Split a text block into crude sentences (no filtering)."""
+        if not text:
+            return []
+
+        normalized = text.replace('\r', ' ').replace('\n', ' ')
+        normalized = re.sub(r'\s+', ' ', normalized).strip()
+        if not normalized:
+            return []
+
+        sentences = []
+        buffer = []
+        length = len(normalized)
+
+        sentence_endings = {'.', '!'}
+
+        i = 0
+        while i < length:
+            ch = normalized[i]
+            buffer.append(ch)
+
+            if ch in sentence_endings:
+                prev_char = normalized[i - 1] if i > 0 else ''
+                next_char = normalized[i + 1] if i + 1 < length else ''
+
+                if prev_char.isdigit() and next_char.isdigit():
+                    i += 1
+                    continue
+
+                if ch == '.' and self._is_single_token_enum(normalized, i):
+                    i += 1
+                    continue
+
+                sentence = ''.join(buffer).strip()
+                if sentence:
+                    sentences.append(self._clean_sentence(sentence))
+                buffer = []
+
+            i += 1
+
+        tail = ''.join(buffer).strip()
+        if tail:
+            sentences.append(self._clean_sentence(tail))
+
+        return sentences
+
+    def _is_heading_paragraph(self, para):
+        """Detect paragraphs that are likely headings (centered/bold labels)."""
+        text = para.text.strip()
+        if not text:
+            return True
+        if para.paragraph_format.alignment == WD_ALIGN_PARAGRAPH.CENTER:
+            return True
+        runs = [run for run in para.runs if run.text.strip()]
+        if runs and all(run.bold for run in runs):
+            return True
+        return False
+
+    def _clean_sentence(self, sentence: str):
+        """Remove English letters and collapse repeated symbols."""
+        if not sentence:
+            return sentence
+
+        cleaned = re.sub(r'[A-Za-z]', '', sentence)
+        cleaned = re.sub(r'(?:-\s*){2,}', ' ', cleaned)
+        cleaned = re.sub(r'-{2,}', ' ', cleaned)
+        cleaned = re.sub(r'-\s*$', '', cleaned)
+        cleaned = re.sub(r'([^\w\s\u0590-\u05FF-])\1+', r'\1', cleaned)
+        cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+        return cleaned
 
 
         
