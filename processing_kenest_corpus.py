@@ -424,9 +424,8 @@ class Protocol:
 
     def _extract_colon_sentences(self):
         """
-        Extract paragraphs that:
-        - end with a colon ':'
-        - contain at least one run that is bold OR underlined
+        Extract paragraphs that end with ':' and clean them.
+        Handles lines like <חברי הוועדה:> correctly.
         """
         try:
             doc = self.doc if hasattr(self, "doc") else Document(self.filepath)
@@ -437,24 +436,43 @@ class Protocol:
         results = []
         for para in doc.paragraphs:
             text = para.text.strip()
-            if not text.endswith(':'):
+            if ':' not in text:
                 continue
-            text = re.sub(r"<<.*?>>", "", text)
-            text = re.sub(r"[<>]", "", text)
-            clean_text = text.rstrip(':').strip()
-            if clean_text not in INVALID_TALKERS_NAMES:
-                for suffix in GET_RID_OF_SUFFIX:
-                    clean_text = clean_text.replace(suffix, "").strip()
-                    
-                clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
-                clean_text = " ".join(clean_text.split())
 
-                parts = [p.strip() for p in clean_text.split(' ') if p.strip()]
+            matches = re.findall(r'(<{1,2}.*?:>{1,2})', text)
+            if matches:
+                for m in matches:
+                    clean_text = m.strip("<> ").rstrip(":").strip()
 
-                if len(parts) >= 2 and len(parts) <= 5:
-                    clean_text = " ".join(parts)
-                    results.append(clean_text)
+                    if clean_text in INVALID_TALKERS_NAMES:
+                        continue
 
+                    for suffix in GET_RID_OF_SUFFIX:
+                        clean_text = clean_text.replace(suffix, "").strip()
+
+                    clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
+                    clean_text = " ".join(clean_text.split())
+                    parts = clean_text.split()
+
+                    if 2 <= len(parts) <= 5:
+                        results.append(clean_text)
+                continue 
+
+            clean_text = text.split(":", 1)[0].strip()
+            if clean_text in INVALID_TALKERS_NAMES:
+                continue
+
+            for suffix in GET_RID_OF_SUFFIX:
+                clean_text = clean_text.replace(suffix, "").strip()
+
+            clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
+            clean_text = " ".join(clean_text.split())
+            parts = clean_text.split()
+
+            if 2 <= len(parts) <= 5:
+                results.append(clean_text)
+
+        # UNIQUE + LENGTH FILTER
         seen = set()
         unique = []
         for s in results:
@@ -462,18 +480,12 @@ class Protocol:
                 seen.add(s)
                 unique.append(s)
 
-        
-        for s in unique:
-            if s in INVALID_TALKERS_NAMES:
-                unique.remove(s)
-
-
         if not unique:
             with open("debug_files.txt", "a", encoding="utf-8") as f:
                 f.write(self.filepath + "\n")
 
-
         return unique
+
 
 
         
@@ -493,11 +505,11 @@ if __name__ == "__main__":
     files = fl.ListFiles()
 
 
-    # with Pool(processes=cpu_count()) as pool:
-    #     protocols = pool.map(process_file, files)
+    with Pool(processes=cpu_count()) as pool:
+        protocols = pool.map(process_file, files)
 
-    protocols = [process_file(f) for f in files]
-    protocols = [p for p in protocols if p is not None]
+    # protocols = [process_file(f) for f in files]
+    # protocols = [p for p in protocols if p is not None]
 
 
     for p in protocols:
