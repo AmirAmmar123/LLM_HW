@@ -5,6 +5,28 @@ from multiprocessing import Pool, cpu_count
 import json
 
 
+debug_files = [
+        "25_ptv_1219728.docx",
+        "20_ptv_488037.docx",
+        "19_ptv_232326.docx",
+        "19_ptv_262672.docx",
+        "23_ptv_582824.docx",
+        "23_ptv_599659.docx",
+        "25_ptv_1457545.docx",
+        "20_ptv_397418.docx",
+        "23_ptv_600338.docx",
+        "20_ptv_519812.docx",
+        "23_ptv_598323.docx",
+        "19_ptv_302840.docx",
+        "20_ptv_311936.docx",
+        "20_ptv_490139.docx",
+        "20_ptv_370910.docx",
+        "20_ptv_341230.docx",
+        "20_ptv_387379.docx",
+        "20_ptv_320584.docx",
+        "20_ptv_341020.docx",
+        "19_ptv_266962.docx"
+]
 
 PATH = r"./knesset_protocols"
 
@@ -27,7 +49,23 @@ INVALID_TALKERS_NAMES = {
     'רישום פרלמנטרי',
     'באמצעים מקוונים',
     '',
-    'חברי הוועדה'
+    'חברי הוועדה',
+    '<הישיבה ננעלה בשעה 11',
+    'כתוב במלווה',
+    'לגבי ההצעה של להוסיף',
+    'ב- יש טענה אחרת כתוב',
+    'אז לכתוב',
+    '<ייעוץ משפטי',
+    'הישיבה ננעלה בשעה 12',
+    '<הישיבה ננעלה בשעה 09',
+    'אני רק רוצה לתזכר',
+    'מנהל/ת הוועדה',
+    'אני אגיד עוד פעם',
+    'בואו נעשה סדר רגע',
+    '- - אמרו',
+    'אני רוצה לשאול ספציפית',
+    'אז יש לי שאלה'
+
 
 }
 
@@ -226,7 +264,8 @@ GET_RID_OF_SUFFIX ={
     'ופיתוח הכפר',
     'עו"ד',
     'הלאומיות',
-    'שר התשתיות'
+    'שר התשתיות',
+    '(יו"ר הוועדה המסדרת)'
 
 }
 
@@ -421,11 +460,29 @@ class Protocol:
                     return line
         return "Unknown"
 
+    def extract_text_between_markers(self,text):
+        """
+        Extract text from a line:
+        - If <something>, return 'something'
+        - If <<s1>> something <<s2>>, return 'something'
+        """
+        text = text.strip()
+        
 
+        double_match = re.match(r'^<{2}.*?>{2}\s*(.*?)\s*<{2}.*?}>{2}$', text)
+        if double_match:
+            return double_match.group(1).strip()
+
+        single_match = re.match(r'^<{1,2}\s*(.*?)\s*>{1,2}$', text)
+        if single_match:
+            return single_match.group(1).strip()
+        
+        return None
+    
     def _extract_colon_sentences(self):
         """
-        Extract paragraphs that end with ':' and clean them.
-        Handles lines like <חברי הוועדה:> correctly.
+        Extract paragraphs that contain ':' and clean potential speaker names.
+        Handles <something> and <<s1>> something <<s2>> correctly.
         """
         try:
             doc = self.doc if hasattr(self, "doc") else Document(self.filepath)
@@ -434,29 +491,46 @@ class Protocol:
             return []
 
         results = []
+
         for para in doc.paragraphs:
             text = para.text.strip()
             if ':' not in text:
                 continue
 
-            matches = re.findall(r'(<{1,2}.*?:>{1,2})', text)
-            if matches:
-                for m in matches:
-                    clean_text = m.strip("<> ").rstrip(":").strip()
+     
+            markers = re.findall(r'<{1,2}.*?>{1,2}', text)
+            if markers:
+        
+                if len(markers) >= 2:
 
-                    if clean_text in INVALID_TALKERS_NAMES:
-                        continue
+                    first_end = text.find(markers[0]) + len(markers[0])
+                    last_start = text.rfind(markers[-1])
+                    clean_text = text[first_end:last_start].strip()
+                else:
+                    
+                    clean_text = self.extract_text_between_markers(markers[0])
 
-                    for suffix in GET_RID_OF_SUFFIX:
-                        clean_text = clean_text.replace(suffix, "").strip()
+                if not clean_text:
+                    continue
 
-                    clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
-                    clean_text = " ".join(clean_text.split())
-                    parts = clean_text.split()
+                if clean_text in INVALID_TALKERS_NAMES:
+                    continue
 
-                    if 2 <= len(parts) <= 5:
-                        results.append(clean_text)
-                continue 
+                for suffix in GET_RID_OF_SUFFIX:
+                    clean_text = clean_text.replace(suffix, "").strip()
+
+         
+                clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
+
+                clean_text = clean_text.rstrip(':').strip()
+
+                clean_text = " ".join(clean_text.split())
+
+                parts = clean_text.split()
+                if 2 <= len(parts) <= 5:
+                    results.append(clean_text)
+                continue  
+
 
             clean_text = text.split(":", 1)[0].strip()
             if clean_text in INVALID_TALKERS_NAMES:
@@ -472,21 +546,20 @@ class Protocol:
             if 2 <= len(parts) <= 5:
                 results.append(clean_text)
 
-        # UNIQUE + LENGTH FILTER
-        seen = set()
+        # Remove duplicates and filter by length
         unique = []
+        seen = set()
         for s in results:
             if 5 < len(s) < 50 and s not in seen:
                 seen.add(s)
                 unique.append(s)
 
+        # Debug if nothing found
         if not unique:
             with open("debug_files.txt", "a", encoding="utf-8") as f:
                 f.write(self.filepath + "\n")
 
         return unique
-
-
 
         
 
@@ -505,11 +578,11 @@ if __name__ == "__main__":
     files = fl.ListFiles()
 
 
-    with Pool(processes=cpu_count()) as pool:
-        protocols = pool.map(process_file, files)
+    # with Pool(processes=cpu_count()) as pool:
+    #     protocols = pool.map(process_file, files)
 
-    # protocols = [process_file(f) for f in files]
-    # protocols = [p for p in protocols if p is not None]
+    protocols = [process_file(f) for f in debug_files]
+    protocols = [p for p in protocols if p is not None]
 
 
     for p in protocols:
