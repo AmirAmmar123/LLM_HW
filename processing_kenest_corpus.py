@@ -439,7 +439,8 @@ class Protocol:
             text = para.text.strip()
             if not text.endswith(':'):
                 continue
-
+            text = re.sub(r"<<.*?>>", "", text)
+            text = re.sub(r"[<>]", "", text)
             clean_text = text.rstrip(':').strip()
             if clean_text not in INVALID_TALKERS_NAMES:
                 for suffix in GET_RID_OF_SUFFIX:
@@ -465,6 +466,12 @@ class Protocol:
         for s in unique:
             if s in INVALID_TALKERS_NAMES:
                 unique.remove(s)
+
+
+        if not unique:
+            with open("debug_files.txt", "a", encoding="utf-8") as f:
+                f.write(self.filepath + "\n")
+
 
         return unique
 

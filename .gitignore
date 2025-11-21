@@ -2,3 +2,5 @@ HW1.pdf
 knesset_protocols
 .vscode
 venv/
+__pycache__/
+debug_files.txt
