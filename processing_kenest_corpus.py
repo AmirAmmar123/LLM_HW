@@ -65,8 +65,6 @@ INVALID_TALKERS_NAMES = {
     '- - אמרו',
     'אני רוצה לשאול ספציפית',
     'אז יש לי שאלה'
-
-
 }
 
 GET_RID_OF_SUFFIX ={
@@ -265,7 +263,7 @@ GET_RID_OF_SUFFIX ={
     'עו"ד',
     'הלאומיות',
     'שר התשתיות',
-    '(יו"ר הוועדה המסדרת)'
+    '(יו"ר הוועדה המסדרת)',
 
 }
 
@@ -307,6 +305,15 @@ HEBROW_HUNDREDS = {
     "שמונה מאות": 800,
     "תשע מאות": 900
 }
+
+
+
+START_WITH = ['סדר', 'הישיבה','חברי', 'ייעוץ', 'מנהלי', 'רישום', 'הודעה','.לא','אני','אמרתי', 'אדוני', 'הביטחון','אבל','מדובר', 'הנושא','דקה','מובילה','לקריאה', 'יש','אוקיי',
+              'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ', 'ק', 'ר', 'ש', 'ת', 'ועוד', 'התשובה', 'ואני', 'נעבור', 'לכן', 'אולי', 
+              'בכלל','והטכנולוגיה','הצעת','קריאת','שאלתי','במלים','אנחנו', 'זו', 'עכשיו', 'להעביר', 'הצעת', 'ובכלל', 'לכן', 'נעבור', 'בואו', 'תיכף', 'בורג', 'התבררו', 'אז', 'בפרשת', 
+              'הבנתי', 'דבר', 'על', 'וברשותך', 'או', 'אסיים', 'בסדר.', 'זה','לא', 'אגיד', 'אתן', 'אלו', 'הנקודה','הצעה', 'ולכן', 'קוראת', 'הוא', 'האם', 'העניין', 'הדברים', 'הדבר', 'היום', 'הטענה',
+              'הכוונה', 'הכרעה', 'החלטה', 'החלטה', 'היא', 'היא', 'הייתי', 'הייתם', 'הייתן', 'היית', 'לא.','לגבי', 'הסעיף', 'אם','החוזר', 'שאלתי', 'מנהל/ת', 'מנהל', 'השאלת', 'דוגמה'
+              'ס–התש"ס–2000;', 'בוודאי.']
 
 
 def process_file(filename):
@@ -479,6 +486,17 @@ class Protocol:
         
         return None
     
+
+    def _has_markers(self, text):
+        return re.findall(r'<{1,2}.*?>{1,2}', text)
+
+
+    def _parse_double_markers(self, text, markers):
+        first_end = text.find(markers[0]) + len(markers[0])
+        last_start = text.rfind(markers[-1])
+        return text[first_end:last_start].strip()
+    
+
     def _extract_colon_sentences(self):
         """
         Extract paragraphs that contain ':' and clean potential speaker names.
@@ -498,16 +516,13 @@ class Protocol:
                 continue
 
      
-            markers = re.findall(r'<{1,2}.*?>{1,2}', text)
+            markers = self._has_markers(text)
+
             if markers:
         
-                if len(markers) >= 2:
-
-                    first_end = text.find(markers[0]) + len(markers[0])
-                    last_start = text.rfind(markers[-1])
-                    clean_text = text[first_end:last_start].strip()
+                if len(markers) == 2:
+                    clean_text = self._parse_double_markers(text, markers)
                 else:
-                    
                     clean_text = self.extract_text_between_markers(markers[0])
 
                 if not clean_text:
@@ -526,8 +541,12 @@ class Protocol:
 
                 clean_text = " ".join(clean_text.split())
 
+            
                 parts = clean_text.split()
-                if 2 <= len(parts) <= 5:
+                if parts and  parts[0] in START_WITH:
+                    continue
+
+                if 2 <= len(parts) <= 3:
                     results.append(clean_text)
                 continue  
 
@@ -540,12 +559,17 @@ class Protocol:
                 clean_text = clean_text.replace(suffix, "").strip()
 
             clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
-            clean_text = " ".join(clean_text.split())
+    
             parts = clean_text.split()
 
-            if 2 <= len(parts) <= 5:
+            if parts and parts[0] in START_WITH:
+                continue
+
+            if 2 <= len(parts) <= 3:
                 results.append(clean_text)
 
+
+            
         # Remove duplicates and filter by length
         unique = []
         seen = set()
@@ -578,11 +602,11 @@ if __name__ == "__main__":
     files = fl.ListFiles()
 
 
-    # with Pool(processes=cpu_count()) as pool:
-    #     protocols = pool.map(process_file, files)
+    with Pool(processes=cpu_count()) as pool:
+        protocols = pool.map(process_file, files)
 
-    protocols = [process_file(f) for f in debug_files]
-    protocols = [p for p in protocols if p is not None]
+    # protocols = [process_file(f) for f in files]
+    # protocols = [p for p in protocols if p is not None]
 
 
     for p in protocols:
