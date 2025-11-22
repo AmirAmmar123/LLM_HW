@@ -5,28 +5,6 @@ from multiprocessing import Pool, cpu_count
 import json
 
 
-debug_files = [
-        "25_ptv_1219728.docx",
-        "20_ptv_488037.docx",
-        "19_ptv_232326.docx",
-        "19_ptv_262672.docx",
-        "23_ptv_582824.docx",
-        "23_ptv_599659.docx",
-        "25_ptv_1457545.docx",
-        "20_ptv_397418.docx",
-        "23_ptv_600338.docx",
-        "20_ptv_519812.docx",
-        "23_ptv_598323.docx",
-        "19_ptv_302840.docx",
-        "20_ptv_311936.docx",
-        "20_ptv_490139.docx",
-        "20_ptv_370910.docx",
-        "20_ptv_341230.docx",
-        "20_ptv_387379.docx",
-        "20_ptv_320584.docx",
-        "20_ptv_341020.docx",
-        "19_ptv_266962.docx"
-]
 
 PATH = r"./knesset_protocols"
 
@@ -313,7 +291,7 @@ START_WITH = ['סדר', 'הישיבה','חברי', 'ייעוץ', 'מנהלי', '
               'בכלל','והטכנולוגיה','הצעת','קריאת','שאלתי','במלים','אנחנו', 'זו', 'עכשיו', 'להעביר', 'הצעת', 'ובכלל', 'לכן', 'נעבור', 'בואו', 'תיכף', 'בורג', 'התבררו', 'אז', 'בפרשת', 
               'הבנתי', 'דבר', 'על', 'וברשותך', 'או', 'אסיים', 'בסדר.', 'זה','לא', 'אגיד', 'אתן', 'אלו', 'הנקודה','הצעה', 'ולכן', 'קוראת', 'הוא', 'האם', 'העניין', 'הדברים', 'הדבר', 'היום', 'הטענה',
               'הכוונה', 'הכרעה', 'החלטה', 'החלטה', 'היא', 'היא', 'הייתי', 'הייתם', 'הייתן', 'היית', 'לא.','לגבי', 'הסעיף', 'אם','החוזר', 'שאלתי', 'מנהל/ת', 'מנהל', 'השאלת', 'דוגמה'
-              'ס–התש"ס–2000;', 'בוודאי.']
+              'ס–התש"ס–2000;', 'בוודאי.', 'וצריך']
 
 
 def process_file(filename):
@@ -453,18 +431,63 @@ class Protocol:
 
     
     def _extract_yor(self):
-        """Extract only the first chairperson's full name from the document."""
-        text = "\n".join(p.text for p in self.doc.paragraphs)
+        """
+        Extract the chairperson's name using multiple patterns:
+
+        Priority:
+        1) 'חברי הוועדה: <name> – היו"ר'
+        2) היו"ר <name>:
+        3) << >> / < > cases
+        4) יו"ר / יו״ר / יור formats
+        5) fallback: first speaker with colon
+        """
+
+     
+        text = "\n".join(p.text.strip() for p in self.doc.paragraphs if p.text.strip())
+
+  
+        text_clean = re.sub(r'[<>{}]+', ' ', text)
+        text_clean = re.sub(r'\s+', ' ', text_clean)
 
 
-        match = re.search(r'היו"ר\s+([א-ת\"\'״׳\.\-\s]+?)(:|\n|מוזמנים|$)', text)
-        if match:
-            full_name = match.group(1).strip()
+        opening_pattern = (
+            r'דברי\s+פתיחה[:\s]+(?:חבר(?:ת)?\s+הכנסת\s+)?'
+            r'([א-ת\"\'״׳\(\)\s\-]+?)\s*[-–]\s*יו"?ר'
+        )
 
-            for line in full_name.splitlines():
-                line = line.strip()
-                if line:
-                    return line
+        m = re.search(opening_pattern, text_clean)
+        if m:
+            return m.group(1).strip()
+        
+        committee_pattern = (
+            r'חברי הוועדה[:\s]+([א-ת\"\'״׳\(\)\s\-]+?)\s*[–—\-]\s*(?:היו"ר|יו"ר|יו״ר|יור)'
+        )
+
+        m = re.search(committee_pattern, text_clean)
+        if m:
+            return m.group(1).strip()
+
+        chair_patterns = [
+            r'היו"ר\s+([א-ת\"\'״׳\.\-\s]+?):',
+            r'יו"ר\s+([א-ת\"\'״׳\.\-\s]+?):',
+            r'יו״ר\s+([א-ת\"\'״׳\.\-\s]+?):',
+            r'יור\s+([א-ת\"\'״׳\.\-\s]+?):',
+        ]
+
+        for pat in chair_patterns:
+            m = re.search(pat, text_clean)
+            if m:
+                return m.group(1).strip()
+
+        for line in text.split("\n"):
+            if ":" in line:
+                clean = re.sub(r'[<>{}]+', '', line).strip()
+                if any(x in clean for x in ['היו"ר', 'יו"ר', 'יו״ר', 'יור']):
+                    left = clean.split(":")[0]
+                    for x in ['היו"ר', 'יו"ר', 'יו״ר', 'יור']:
+                        left = left.replace(x, "")
+                    return left.strip()
+
         return "Unknown"
 
     def extract_text_between_markers(self,text):
@@ -595,6 +618,13 @@ class ProtocolsCollection:
         self.protocols.append(protocol)
 
 
+debug_files = [
+        "16_ptv_577443.docx",
+        "16_ptv_577758.docx",
+        "16_ptv_491962.docx",
+        "20_ptv_490139.docx",
+        "15_ptv_498215.docx",
+]
 
 
 if __name__ == "__main__":
@@ -605,7 +635,7 @@ if __name__ == "__main__":
     with Pool(processes=cpu_count()) as pool:
         protocols = pool.map(process_file, files)
 
-    # protocols = [process_file(f) for f in files]
+    # protocols = [process_file(f) for f in debug_files ]
     # protocols = [p for p in protocols if p is not None]
 
 
