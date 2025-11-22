@@ -290,8 +290,8 @@ START_WITH = ['סדר', 'הישיבה','חברי', 'ייעוץ', 'מנהלי', '
               'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ', 'ק', 'ר', 'ש', 'ת', 'ועוד', 'התשובה', 'ואני', 'נעבור', 'לכן', 'אולי', 
               'בכלל','והטכנולוגיה','הצעת','קריאת','שאלתי','במלים','אנחנו', 'זו', 'עכשיו', 'להעביר', 'הצעת', 'ובכלל', 'לכן', 'נעבור', 'בואו', 'תיכף', 'בורג', 'התבררו', 'אז', 'בפרשת', 
               'הבנתי', 'דבר', 'על', 'וברשותך', 'או', 'אסיים', 'בסדר.', 'זה','לא', 'אגיד', 'אתן', 'אלו', 'הנקודה','הצעה', 'ולכן', 'קוראת', 'הוא', 'האם', 'העניין', 'הדברים', 'הדבר', 'היום', 'הטענה',
-              'הכוונה', 'הכרעה', 'החלטה', 'החלטה', 'היא', 'היא', 'הייתי', 'הייתם', 'הייתן', 'היית', 'לא.','לגבי', 'הסעיף', 'אם','החוזר', 'שאלתי', 'מנהל/ת', 'מנהל', 'השאלת', 'דוגמה'
-              'ס–התש"ס–2000;', 'בוודאי.', 'וצריך']
+              'הכוונה', 'הכרעה', 'החלטה', 'החלטה', 'היא', 'היא', 'הייתי', 'הייתם', 'הייתן', 'היית', 'לא.','לגבי', 'הסעיף', 'אם','החוזר', 'שאלתי', 'מנהל/ת', 'מנהל', 'השאלת', 'דוגמה', 'והמשפט'
+              'ס–התש"ס–2000;', 'בוודאי.', 'וצריך', 'הנה']
 
 
 def process_file(filename):
@@ -307,7 +307,8 @@ def process_file(filename):
                 "protocol_number": protocol.protocol_number,
                 "chair": protocol.yor_hankest,
                 "filename": filename,
-                "Speakers": protocol.colon_sentences
+                "Speakers": protocol.speakers,
+                "map_sentence": protocol.map_sentence
             }
     else:
         print(f"Filename: {filename} => Invalid format")
@@ -355,7 +356,56 @@ class Protocol:
             return
         
         self.yor_hankest = self._extract_yor()
-        self.colon_sentences = self._extract_colon_sentences()
+        self.speakers = self._extract_speakers_names()
+        self.map_sentence = self._extract_speakers_sentences()
+
+    def _extract_speakers_sentences(self):
+        """
+        מחזיר מילון שבו כל דובר ממופה לרשימת המשפטים שהוא אמר.
+        """
+        try:
+            doc = self.doc if hasattr(self, "doc") else Document(self.filepath)
+        except Exception as e:
+            print(f"Error opening {self.filepath} for sentences: {e}")
+            return {}
+
+        speaker_sentences = {}
+        current_speaker = None
+
+        for para in doc.paragraphs:
+            text = para.text.strip()
+            if not text:
+                continue
+
+            # אם יש ':' נניח שזה סימן לדובר חדש
+            if ':' in text:
+                potential_speaker = text.split(":", 1)[0].strip()
+                
+                # ניקוי כמו בקוד הקודם
+                for suffix in GET_RID_OF_SUFFIX:
+                    potential_speaker = potential_speaker.replace(suffix, "").strip()
+                potential_speaker = re.sub(r'\([^)]*\)', '', potential_speaker).strip()
+                potential_speaker = " ".join(potential_speaker.split())
+                
+                if potential_speaker in INVALID_TALKERS_NAMES or potential_speaker in START_WITH:
+                    current_speaker = None
+                elif 2 <= len(potential_speaker.split()) <= 3:
+                    current_speaker = potential_speaker
+                    if current_speaker not in speaker_sentences:
+                        speaker_sentences[current_speaker] = []
+
+                # המשפט עצמו אחרי ':' נשמר
+                if current_speaker:
+                    sentence = text.split(":", 1)[1].strip()
+                    if sentence:
+                        speaker_sentences[current_speaker].append(sentence)
+            else:
+                # המשך של דובר קודם
+                if current_speaker:
+                    speaker_sentences[current_speaker].append(text)
+
+        return speaker_sentences
+
 
     def _extract_protocol_number(self):
         """Extract the protocol number from the document."""
@@ -520,7 +570,7 @@ class Protocol:
         return text[first_end:last_start].strip()
     
 
-    def _extract_colon_sentences(self):
+    def _extract_speakers_names(self):
         """
         Extract paragraphs that contain ':' and clean potential speaker names.
         Handles <something> and <<s1>> something <<s2>> correctly.
@@ -618,13 +668,13 @@ class ProtocolsCollection:
         self.protocols.append(protocol)
 
 
-debug_files = [
-        "16_ptv_577443.docx",
-        "16_ptv_577758.docx",
-        "16_ptv_491962.docx",
-        "20_ptv_490139.docx",
-        "15_ptv_498215.docx",
-]
+# debug_files = [
+#         "16_ptv_577443.docx",
+#         # "16_ptv_577758.docx",
+#         # "16_ptv_491962.docx",
+#         # "20_ptv_490139.docx",
+#         # "15_ptv_498215.docx",
+# ]
 
 
 if __name__ == "__main__":
@@ -641,4 +691,10 @@ if __name__ == "__main__":
 
     for p in protocols:
         if p:
-            print(f"Knesset: {p['knesset_number']}, Type: {p['protocol_type']}, Protocol Number: {p['protocol_number']}, Chair: {p['chair']}, file: {p['filename']}, Speakers: {p['Speakers']}")
+            print(f"Knesset: {p['knesset_number']}, Type: {p['protocol_type']}, Protocol Number: {p['protocol_number']}, Chair: {p['chair']}, file: {p['filename']}")
+            print("Speakers and sentences:")
+            for speaker, sentences in p['map_sentence'].items():
+                print(f"\nSpeaker: {speaker}")
+                for idx, sentence in enumerate(sentences, 1):
+                    print(f"  {idx}. {sentence}")
+            print("\n" + "="*80 + "\n")
