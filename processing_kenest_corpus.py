@@ -361,7 +361,8 @@ class Protocol:
 
     def _extract_speakers_sentences(self):
         """
-        מחזיר מילון שבו כל דובר ממופה לרשימת המשפטים שהוא אמר.
+        Map each extracted speaker to the sentences they said in the document.
+        Uses the cleaned list of speakers from _extract_speakers_names().
         """
         try:
             doc = self.doc if hasattr(self, "doc") else Document(self.filepath)
@@ -372,39 +373,41 @@ class Protocol:
         speaker_sentences = {}
         current_speaker = None
 
+        # Get the list of cleaned speakers
+        speakers_list = self._extract_speakers_names()
+
         for para in doc.paragraphs:
             text = para.text.strip()
             if not text:
                 continue
 
-            # אם יש ':' נניח שזה סימן לדובר חדש
+            # Check if paragraph contains a colon
             if ':' in text:
                 potential_speaker = text.split(":", 1)[0].strip()
-                
-                # ניקוי כמו בקוד הקודם
+                # Clean potential speaker name similarly to _extract_speakers_names
                 for suffix in GET_RID_OF_SUFFIX:
                     potential_speaker = potential_speaker.replace(suffix, "").strip()
                 potential_speaker = re.sub(r'\([^)]*\)', '', potential_speaker).strip()
                 potential_speaker = " ".join(potential_speaker.split())
-                
-                if potential_speaker in INVALID_TALKERS_NAMES or potential_speaker in START_WITH:
-                    current_speaker = None
-                elif 2 <= len(potential_speaker.split()) <= 3:
+
+                # Check if the cleaned name matches one of the extracted speakers
+                if potential_speaker in speakers_list:
                     current_speaker = potential_speaker
                     if current_speaker not in speaker_sentences:
                         speaker_sentences[current_speaker] = []
 
-                # המשפט עצמו אחרי ':' נשמר
+                # Add the text after the colon as the first sentence
                 if current_speaker:
                     sentence = text.split(":", 1)[1].strip()
                     if sentence:
                         speaker_sentences[current_speaker].append(sentence)
             else:
-                # המשך של דובר קודם
+                # Continuation of previous speaker
                 if current_speaker:
                     speaker_sentences[current_speaker].append(text)
 
         return speaker_sentences
+
 
 
     def _extract_protocol_number(self):
