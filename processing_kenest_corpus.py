@@ -359,6 +359,47 @@ class Protocol:
         self.speakers = self._extract_speakers_names()
         self.map_sentence = self._extract_speakers_sentences()
 
+
+
+    def _clean_and_validate_sentence(self, sentence):
+        # Existing cleaning from previous
+        sentence = re.sub(r'\(truncated \d+ characters\)\.\.\.', '', sentence).strip()
+        sentence = re.sub(r'^\d+\.\s*', '', sentence).strip()
+        sentence = re.sub(r'\s*\d+$', '', sentence).strip()
+        sentence = re.sub(r'<[^>]+>', '', sentence).strip()
+        sentence = ' '.join(sentence.split())
+        
+        if not sentence:
+            return None
+        
+        # Additional validations
+        # Check if mostly Hebrew (at least 80% Hebrew characters)
+        cleaned = re.sub(r'[^\w\s]', '', sentence)  # Remove punctuation
+        cleaned = re.sub(r'\d+', '', cleaned)       # Remove numbers
+        hebrew_chars = len(re.findall(r'[\u0590-\u05FF]', cleaned))
+        total_chars = len(cleaned)
+        if total_chars == 0 or hebrew_chars / total_chars < 0.8:
+            return None
+        
+        # Check not only non-letters (must have Hebrew letters)
+        if not re.search(r'[\u0590-\u05FF]', sentence):
+            return None
+        
+        # Check not truncated (ends with ---, …, or multiple dots)
+        if re.search(r'(---|…|\.{2,})$', sentence):
+            return None
+        
+        # Minimum length (e.g., at least 10 characters)
+        if len(sentence) < 10:
+            return None
+        
+        # Additional filters: e.g., if contains too many special chars
+        special_ratio = len(re.findall(r'[^\u0590-\u05FF\s]', sentence)) / len(sentence)
+        if special_ratio > 0.5:
+            return None
+        
+        return sentence
+
     def _extract_speakers_sentences(self):
         """
         Map each extracted speaker to the sentences they said in the document.
@@ -369,45 +410,39 @@ class Protocol:
         except Exception as e:
             print(f"Error opening {self.filepath} for sentences: {e}")
             return {}
-
         speaker_sentences = {}
         current_speaker = None
 
-        # Get the list of cleaned speakers
         speakers_list = self._extract_speakers_names()
-
         for para in doc.paragraphs:
             text = para.text.strip()
             if not text:
                 continue
 
-            # Check if paragraph contains a colon
             if ':' in text:
                 potential_speaker = text.split(":", 1)[0].strip()
-                # Clean potential speaker name similarly to _extract_speakers_names
+      
                 for suffix in GET_RID_OF_SUFFIX:
                     potential_speaker = potential_speaker.replace(suffix, "").strip()
                 potential_speaker = re.sub(r'\([^)]*\)', '', potential_speaker).strip()
                 potential_speaker = " ".join(potential_speaker.split())
-
-                # Check if the cleaned name matches one of the extracted speakers
+   
                 if potential_speaker in speakers_list:
                     current_speaker = potential_speaker
                     if current_speaker not in speaker_sentences:
                         speaker_sentences[current_speaker] = []
 
-                # Add the text after the colon as the first sentence
                 if current_speaker:
-                    sentence = text.split(":", 1)[1].strip()
-                    if sentence:
+                    sentence = self._clean_and_validate_sentence(text.split(":", 1)[1].strip())
+                    if sentence:  
                         speaker_sentences[current_speaker].append(sentence)
             else:
-                # Continuation of previous speaker
+
                 if current_speaker:
-                    speaker_sentences[current_speaker].append(text)
-
+                    text = self._clean_and_validate_sentence(text)
+                    if text:
+                        speaker_sentences[current_speaker].append(text)
         return speaker_sentences
-
 
 
     def _extract_protocol_number(self):
@@ -661,7 +696,7 @@ class Protocol:
 
         return unique
 
-        
+
 
 class ProtocolsCollection:
     def __init__(self):
