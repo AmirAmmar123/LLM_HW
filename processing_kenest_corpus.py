@@ -570,7 +570,7 @@ class Protocol:
 
 
             
-        # Remove duplicates and filter by length
+       
         unique = []
         seen = set()
         for s in results:
@@ -578,7 +578,7 @@ class Protocol:
                 seen.add(s)
                 unique.append(s)
 
-        # Debug if nothing found
+
         if not unique:
             with open("debug_files.txt", "a", encoding="utf-8") as f:
                 f.write(self.filepath + "\n")
