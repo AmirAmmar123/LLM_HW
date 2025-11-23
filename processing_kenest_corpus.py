@@ -295,6 +295,16 @@ START_WITH = ['סדר', 'הישיבה','חברי', 'ייעוץ', 'מנהלי', '
               'הכוונה', 'הכרעה', 'החלטה', 'החלטה', 'היא', 'היא', 'הייתי', 'הייתם', 'הייתן', 'היית', 'לא.','לגבי', 'הסעיף', 'אם','החוזר', 'שאלתי', 'מנהל/ת', 'מנהל', 'השאלת', 'דוגמה', 'והמשפט'
               'ס–התש"ס–2000;', 'בוודאי.', 'וצריך', 'הנה', 'רשמת']
 
+TOKEN_REGEX = re.compile(
+    r'[\u0590-\u05FF]\.[\u0590-\u05FF](?:\.[\u0590-\u05FF])*'   # ד.ר / מ.ד.א
+    r'|[\u0590-\u05FF]["״׳][\u0590-\u05FF]'                     # ד"ר / ד׳ר
+    r'|[א-ת]\.'                                                 # enumeration letter.
+    r'|[0-9]+\.'                                                # numeric enumeration
+    r'|[\u0590-\u05FF0-9]+(?:[-־][\u0590-\u05FF0-9]+)+'         # hyphenated compounds
+    r'|[\u0590-\u05FF0-9]+'                                     # regular word/number
+    r'|[\.]{3}'                                                 # ellipsis
+    r'|[.,!?;:"\'״׳()\[\]{}:\-…]'                               # punctuation tokens
+)
 
 
 def process_file(filename):
@@ -560,21 +570,31 @@ class Protocol:
         return False
     
     def _clean_sentence(self, sentence: str):
-        """Remove English letters and collapse repeated symbols."""
+        """collapse repeated and unwanted symbols."""
         if not sentence:
             return sentence
 
-        cleaned = re.sub(r'[A-Za-z]', '', sentence)
-        cleaned = re.sub(r'(?:-\s*){2,}', ' ', cleaned)
-        cleaned = re.sub(r'-{2,}', ' ', cleaned)
-        cleaned = re.sub(r'-\s*$', '', cleaned)
-        cleaned = re.sub(r'([^\w\s\u0590-\u05FF-])\1+', r'\1', cleaned)
+        cleaned = re.sub(r'[\\/]', ' ', sentence)  # convert slashes to spaces
         cleaned = re.sub(r'\s+', ' ', cleaned).strip()
         return cleaned
 
+    def _is_valid_sentence(self, sentence: str):
+        """Check if a sentence should be kept (Hebrew only, no incomplete markers)."""
+        if not sentence:
+            return False
+        if not re.search(r'[\u0590-\u05FF]', sentence):
+            return False
+        if re.search(r'[A-Za-z]', sentence):
+            return False
+        if re.search(r'(?:[-–—]\s*){2,}', sentence):
+            return False
+        if re.search(r'[^\u0590-\u05FF0-9\s\.,!?;:"\'()\-\[\]{}<>׳״־–…]', sentence):
+            return False
+        return True
+
     
     def _split_into_sentences(self, text: str):
-        """Split a text block into crude sentences (no filtering)."""
+        """Split a text block into sentences, tokenize, and enforce assignment rules."""
         if not text:
             return []
 
@@ -607,17 +627,38 @@ class Protocol:
                     continue
 
                 sentence = ''.join(buffer).strip()
-                if sentence:
-                    sentences.append(self._clean_sentence(sentence))
+                if sentence and self._is_valid_sentence(sentence):
+                    cleaned_sentence = self._clean_sentence(sentence)
+                    tokens = self._tokenize_sentence(cleaned_sentence)
+                    if len(tokens) >= 4:
+                        sentences.append({
+                            "text": " ".join(tokens),
+                            "tokens": tokens
+                        })
                 buffer = []
 
             i += 1
 
         tail = ''.join(buffer).strip()
-        if tail:
-            sentences.append(self._clean_sentence(tail))
+        if tail and self._is_valid_sentence(tail):
+            cleaned_tail = self._clean_sentence(tail)
+            tokens = self._tokenize_sentence(cleaned_tail)
+            if len(tokens) >= 4:
+                sentences.append({
+                    "text": " ".join(tokens),
+                    "tokens": tokens
+                })
 
         return sentences
+
+    def _tokenize_sentence(self, sentence: str):
+        """Split a cleaned sentence into tokens following assignment rules."""
+        tokens = []
+        for match in TOKEN_REGEX.finditer(sentence):
+            token = match.group(0)
+            if token and not token.isspace():
+                tokens.append(token)
+        return tokens
 
 
     def _extract_speeches(self):
@@ -824,7 +865,8 @@ if __name__ == "__main__":
                         "protocol_number": protocol_number,
                         "protocol_chairman": protocol_chairman,
                         "speaker_name": speaker,
-                        "sentence_text": sentence
+                        "sentence_text": sentence["text"],
+                        "tokens": sentence["tokens"]
                     }
                     f.write(json.dumps(line, ensure_ascii=False) + "\n")
     print(f"\nJSONL file saved to {output_file}")
