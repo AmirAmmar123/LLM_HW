@@ -4,3 +4,4 @@ knesset_protocols
 venv/
 __pycache__/
 debug_files.txt
+*.jsonl

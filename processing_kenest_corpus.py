@@ -242,6 +242,7 @@ GET_RID_OF_SUFFIX ={
     'הלאומיות',
     'שר התשתיות',
     '(יו"ר הוועדה המסדרת)',
+    'והתכנון'
 
 }
 
@@ -291,7 +292,7 @@ START_WITH = ['סדר', 'הישיבה','חברי', 'ייעוץ', 'מנהלי', '
               'בכלל','והטכנולוגיה','הצעת','קריאת','שאלתי','במלים','אנחנו', 'זו', 'עכשיו', 'להעביר', 'הצעת', 'ובכלל', 'לכן', 'נעבור', 'בואו', 'תיכף', 'בורג', 'התבררו', 'אז', 'בפרשת', 
               'הבנתי', 'דבר', 'על', 'וברשותך', 'או', 'אסיים', 'בסדר.', 'זה','לא', 'אגיד', 'אתן', 'אלו', 'הנקודה','הצעה', 'ולכן', 'קוראת', 'הוא', 'האם', 'העניין', 'הדברים', 'הדבר', 'היום', 'הטענה',
               'הכוונה', 'הכרעה', 'החלטה', 'החלטה', 'היא', 'היא', 'הייתי', 'הייתם', 'הייתן', 'היית', 'לא.','לגבי', 'הסעיף', 'אם','החוזר', 'שאלתי', 'מנהל/ת', 'מנהל', 'השאלת', 'דוגמה', 'והמשפט'
-              'ס–התש"ס–2000;', 'בוודאי.', 'וצריך', 'הנה']
+              'ס–התש"ס–2000;', 'בוודאי.', 'וצריך', 'הנה', 'רשמת']
 
 
 def process_file(filename):
@@ -422,8 +423,7 @@ class Protocol:
             if ':' in text:
                 potential_speaker = text.split(":", 1)[0].strip()
       
-                for suffix in GET_RID_OF_SUFFIX:
-                    potential_speaker = potential_speaker.replace(suffix, "").strip()
+
                 potential_speaker = re.sub(r'\([^)]*\)', '', potential_speaker).strip()
                 potential_speaker = " ".join(potential_speaker.split())
    
@@ -727,12 +727,33 @@ if __name__ == "__main__":
     # protocols = [p for p in protocols if p is not None]
 
 
-    for p in protocols:
-        if p:
-            print(f"Knesset: {p['knesset_number']}, Type: {p['protocol_type']}, Protocol Number: {p['protocol_number']}, Chair: {p['chair']}, file: {p['filename']}")
-            print("Speakers and sentences:")
-            for speaker, sentences in p['map_sentence'].items():
-                print(f"\nSpeaker: {speaker}")
-                for idx, sentence in enumerate(sentences, 1):
-                    print(f"  {idx}. {sentence}")
-            print("\n" + "="*80 + "\n")
+
+
+    output_file = "protocols_output.jsonl"
+
+    with open(output_file, "w", encoding="utf-8") as f:
+        for p in protocols:
+            if not p:
+                continue
+
+            protocol_name = p.get("filename", "")
+            knesset_number = p.get("knesset_number", "")
+            protocol_type = p.get("protocol_type", "")
+            protocol_number = p.get("protocol_number", "")
+            protocol_chairman = p.get("chair", "")
+
+            for speaker, sentences in p.get("map_sentence", {}).items():
+                for sentence in sentences:
+                    line = {
+                        "protocol_name": protocol_name,
+                        "knesset_number": knesset_number,
+                        "protocol_type": protocol_type,
+                        "protocol_number": protocol_number,
+                        "protocol_chairman": protocol_chairman,
+                        "speaker_name": speaker,
+                        "sentence_text": sentence
+                    }
+                    # write as a single JSON line
+                    f.write(json.dumps(line, ensure_ascii=False) + "\n")
+
+    print(f"JSONL file saved to {output_file}")
