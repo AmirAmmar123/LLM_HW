@@ -497,7 +497,7 @@ class Protocol:
                         left = left.replace(x, "")
                     return left.strip()
 
-        return "Unknown"
+        return "לא ידוע"
     
 
     
@@ -825,6 +825,13 @@ def write_chunk(chunk, temp_file):
                     if re.search(r"–(\s*–)+", clean):
                         continue
                     
+
+                    tokens = tokenize_hebrew(clean)
+
+
+                    if len(tokens) < 4:
+                        continue
+
                     line = {
                         "protocol_name": protocol_name,
                         "knesset_number": knesset_number,
@@ -832,9 +839,39 @@ def write_chunk(chunk, temp_file):
                         "protocol_number": protocol_number,
                         "protocol_chairman": protocol_chairman,
                         "speaker_name": speaker,
-                        "sentence_text": clean
+                        "sentence_text": tokens
                     }
                     f.write(json.dumps(line, ensure_ascii=False) + "\n")
+
+
+            
+
+def tokenize_hebrew(sentence):
+    s = sentence.strip()
+
+    s = re.sub(r"\s+", " ", s)
+
+
+    s = re.sub(r"([א-ת]+)(['״׳\"])([א-ת]+)", r"\1<GRSH>\3", s)
+
+    s = re.sub(r"([א-ת]+)-([א-ת]+)", r"\1<MAKAF>\2", s)
+
+
+    s = re.sub(r"([.,!?;])", r" \1 ", s)
+
+
+    s = re.sub(r"\s+:", " :", s)
+
+    tokens = s.split()
+
+    restored = []
+    for t in tokens:
+        t = t.replace("<GRSH>", "'")
+        t = t.replace("<MAKAF>", "-")
+        restored.append(t)
+
+    return restored
+
 
 if __name__ == "__main__":
     fl = FileLoader()
@@ -881,6 +918,11 @@ if __name__ == "__main__":
                         clean_text = sentence.strip()
                         if clean_text == "" or re.fullmatch(r"[-–—\s]+", clean_text):
                             continue
+                        if re.search(r"–(\s*–)+", clean_text):
+                            continue
+                        tokens = tokenize_hebrew(clean_text)
+                        if len(tokens) < 4:
+                            continue
                         line = {
                             "protocol_name": protocol_name,
                             "knesset_number": knesset_number,
@@ -888,7 +930,7 @@ if __name__ == "__main__":
                             "protocol_number": protocol_number,
                             "protocol_chairman": protocol_chairman,
                             "speaker_name": speaker,
-                            "sentence_text": sentence
+                            "sentence_text": tokens
                         }
                         f.write(json.dumps(line, ensure_ascii=False) + "\n")
 
