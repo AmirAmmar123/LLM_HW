@@ -858,7 +858,7 @@ def write_chunk_to_list(chunk):
                     "protocol_number": protocol_number,
                     "protocol_chairman": protocol_chairman,
                     "speaker_name": speaker,
-                    "sentence_text": tokens
+                    "sentence_text": " ".join(tokens)
                 }
                 lines.append(line)
     return lines
