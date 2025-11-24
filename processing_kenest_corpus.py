@@ -4,7 +4,7 @@ from docx import Document
 from multiprocessing import Pool, cpu_count
 import json
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-
+import argparse
 
 
 PATH = r"./knesset_protocols"
@@ -799,50 +799,6 @@ class ProtocolsCollection:
 # ]
 
 
-def write_chunk(chunk, temp_file):
-    import re
-
-    with open(temp_file, "w", encoding="utf-8") as f:
-        for p in chunk:
-            protocol_name = p.get("filename", "")
-            knesset_number = p.get("knesset_number", "")
-            protocol_type = p.get("protocol_type", "")
-            protocol_number = p.get("protocol_number", "")
-            protocol_chairman = p.get("chair", "")
-
-            for speech in p.get("Speeches", []):
-                speaker = speech["speaker"]
-
-                for sentence in speech["sentences"]:
-                    
-                    clean = sentence.strip()
-
-
-                    if clean == "" or re.fullmatch(r"[-–—\s]+", clean):
-                        continue
-
-
-                    if re.search(r"–(\s*–)+", clean):
-                        continue
-                    
-
-                    tokens = tokenize_hebrew(clean)
-
-
-                    if len(tokens) < 4:
-                        continue
-
-                    line = {
-                        "protocol_name": protocol_name,
-                        "knesset_number": knesset_number,
-                        "protocol_type": protocol_type,
-                        "protocol_number": protocol_number,
-                        "protocol_chairman": protocol_chairman,
-                        "speaker_name": speaker,
-                        "sentence_text": tokens
-                    }
-                    f.write(json.dumps(line, ensure_ascii=False) + "\n")
-
 
             
 
@@ -873,65 +829,73 @@ def tokenize_hebrew(sentence):
     return restored
 
 
+def write_chunk_to_list(chunk):
+    """Process a chunk of protocols and return a list of JSON objects"""
+    lines = []
+    for p in chunk:
+        protocol_name = p.get("filename", "")
+        knesset_number = p.get("knesset_number", "")
+        protocol_type = p.get("protocol_type", "")
+        protocol_number = p.get("protocol_number", "")
+        protocol_chairman = p.get("chair", "")
+        speeches = p.get("Speeches", [])
+        for speech in speeches:
+            speaker = speech["speaker"]
+            sentences = speech["sentences"]
+            for sentence in sentences:
+                clean_text = sentence.strip()
+                if clean_text == "" or re.fullmatch(r"[-–—\s]+", clean_text):
+                    continue
+                if re.search(r"–(\s*–)+", clean_text):
+                    continue
+                tokens = tokenize_hebrew(clean_text)
+                if len(tokens) < 4:
+                    continue
+                line = {
+                    "protocol_name": protocol_name,
+                    "knesset_number": knesset_number,
+                    "protocol_type": protocol_type,
+                    "protocol_number": protocol_number,
+                    "protocol_chairman": protocol_chairman,
+                    "speaker_name": speaker,
+                    "sentence_text": tokens
+                }
+                lines.append(line)
+    return lines
+
 if __name__ == "__main__":
-    fl = FileLoader()
+    parser = argparse.ArgumentParser(description="Process Knesset protocols into JSONL.")
+    parser.add_argument("input_dir", type=str, help="Path to the input directory with files")
+    parser.add_argument("output_file", type=str, help="Path to the output JSONL file")
+    args = parser.parse_args()
+
+    fl = FileLoader(args.input_dir)
     files = fl.ListFiles()
+
+    # Process files in parallel
     with Pool(processes=cpu_count()) as pool:
         results = pool.map(process_file, files)
-   
+
     protocols = [p for p in results if p]
-    output_file = "protocols_output.jsonl"
 
-    # Parallelize the JSON writing
-    num_processes = cpu_count()
-    if num_processes > 0 and len(protocols) > 0:
-        chunk_size = (len(protocols) + num_processes - 1) // num_processes  # Ceiling division
-        chunks = [protocols[i:i + chunk_size] for i in range(0, len(protocols), chunk_size)]
-        temp_files = [f"temp_{i}.jsonl" for i in range(len(chunks))]
-        
-        with Pool(processes=num_processes) as pool:
-            pool.starmap(write_chunk, zip(chunks, temp_files))
-        
-        # Concatenate temp files in order
-        with open(output_file, "w", encoding="utf-8") as out:
-            for temp in temp_files:
-                with open(temp, "r", encoding="utf-8") as inp:
-                    out.write(inp.read())
-        
-        # Clean up temp files
-        for temp in temp_files:
-            os.remove(temp)
+    if len(protocols) == 0:
+        print("No protocols found!")
     else:
-        # Fallback to original if no protocols or no processes
-        with open(output_file, "w", encoding="utf-8") as f:
-            for p in protocols:
-                protocol_name = p.get("filename", "")
-                knesset_number = p.get("knesset_number", "")
-                protocol_type = p.get("protocol_type", "")
-                protocol_number = p.get("protocol_number", "")
-                protocol_chairman = p.get("chair", "")
-                speeches = p.get("Speeches", [])
-                for speech in speeches:
-                    speaker = speech["speaker"]
-                    sentences = speech["sentences"]
-                    for sentence in sentences:
-                        clean_text = sentence.strip()
-                        if clean_text == "" or re.fullmatch(r"[-–—\s]+", clean_text):
-                            continue
-                        if re.search(r"–(\s*–)+", clean_text):
-                            continue
-                        tokens = tokenize_hebrew(clean_text)
-                        if len(tokens) < 4:
-                            continue
-                        line = {
-                            "protocol_name": protocol_name,
-                            "knesset_number": knesset_number,
-                            "protocol_type": protocol_type,
-                            "protocol_number": protocol_number,
-                            "protocol_chairman": protocol_chairman,
-                            "speaker_name": speaker,
-                            "sentence_text": tokens
-                        }
-                        f.write(json.dumps(line, ensure_ascii=False) + "\n")
+        # Split into chunks for parallel processing
+        num_processes = cpu_count()
+        chunk_size = (len(protocols) + num_processes - 1) // num_processes
+        chunks = [protocols[i:i + chunk_size] for i in range(0, len(protocols), chunk_size)]
 
-    print(f"\nJSONL file saved to {output_file}")
+        with Pool(processes=num_processes) as pool:
+            all_lines = pool.map(write_chunk_to_list, chunks)
+
+        # Flatten list of lists
+        all_lines_flat = [item for sublist in all_lines for item in sublist]
+
+        # Write JSONL line by line
+        with open(args.output_file, "w", encoding="utf-8") as f:
+            for line in all_lines_flat:
+                f.write(json.dumps(line, ensure_ascii=False) + "\n")
+
+        print(f"\nJSONL file saved to {args.output_file}")
+    
