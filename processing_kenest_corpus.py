@@ -3,22 +3,248 @@ import os
 from docx import Document
 from multiprocessing import Pool, cpu_count
 import json
-
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+import argparse
 
 
 PATH = r"./knesset_protocols"
 
 
 INVALID_TALKERS_NAMES = {
+    'חברי כנסת',
+    'משתתפים באמצעים מקוונים',
+    'מנהלות הוועדה',
+    'מסקנות הוועדה'
     "חברי הוועדה",
     "מוזמנים",
     "קריאה",
-    "אני מבקש לשאול"
+    "אני מבקש לשאול",
+    'נכחו',
+    'סדר היום',
+    'חברי הכנסת',
+    'באמצעים מקוונים',
+    'ייעוץ משפטי',
+    'באמצעים מקוונים',
+    'רישום פרלמנטרי',
+    'באמצעים מקוונים',
+    '',
+    'חברי הוועדה',
+    '<הישיבה ננעלה בשעה 11',
+    'כתוב במלווה',
+    'לגבי ההצעה של להוסיף',
+    'ב- יש טענה אחרת כתוב',
+    'אז לכתוב',
+    '<ייעוץ משפטי',
+    'הישיבה ננעלה בשעה 12',
+    '<הישיבה ננעלה בשעה 09',
+    'אני רק רוצה לתזכר',
+    'מנהל/ת הוועדה',
+    'אני אגיד עוד פעם',
+    'בואו נעשה סדר רגע',
+    '- - אמרו',
+    'אני רוצה לשאול ספציפית',
+    'אז יש לי שאלה'
 }
 
 GET_RID_OF_SUFFIX ={
+    'יו"ר ועדת הכנסת',
+    'שר החינוך',
+    'שר החינוך '
     'היו"ר',
     'היו”ר',
+    'לאיכות הסביבה'
+    'השר לאיכות הסביבה',
+    'שר הבריאות',
+    'סגן שר החינוך, התרבות והספורט',
+    'שר החינוך, התרבות והספורט',
+    'שר המשפטים',
+    'רצוני לשאול',
+    'שר האוצר',
+    'שרת העבודה והרווחה',
+    'שר התחבורה',
+    'תשובת שר התחבורה',
+    'שר המשטרה',
+    'תשובת שר המשטרה'
+    'סגנית מזכיר הכנסת',
+    'שר החקלאות',
+    'חבר הכנסת',
+    'סגנית מזכיר הכנסת',
+    'שאל את ביום',
+    'משרד המשפטים',
+    'שר התיירות',
+    'סגן מזכיר הכנסת',
+    'שר התקשורת',
+    'השר לענייני דתות',
+    'מזכיר הכנסת',
+    'סגן מזכיר הכנסת',
+    'מנהלת הוועדה',
+    'שר הפנים',
+    'תשובת',
+    'להגנת הסביבה',
+    'השר להגנת הסביבה',
+    'שר התשתיות הלאומיות',
+    'היו"ר',
+    'היו”ר',
+    'השר לאיכות הסביבה',
+    'שר הבריאות',
+    'סגן שר החינוך, התרבות והספורט',
+    'שר החינוך, התרבות והספורט',
+    'שר המשפטים',
+    'רצוני לשאול',
+    'שר האוצר',
+    'שרת העבודה והרווחה',
+    'שר התחבורה',
+    'תשובת שר התחבורה',
+    'שר המשטרה',
+    'תשובת שר המשטרה',
+    'סגנית מזכיר הכנסת',
+    'שר החקלאות',
+    'חבר הכנסת',
+    'שאל את ביום',
+    'משרד המשפטים',
+    'שר התיירות',
+    'סגן מזכיר הכנסת',
+    'השר',
+    'שר התקשורת',
+    'השר לענייני דתות',
+    'מזכיר הכנסת',
+    'מנהלת הוועדה',
+    'שר הפנים',
+    'תשובת',
+    'להגנת הסביבה',
+    'השר להגנת הסביבה',
+    'שר התשתיות הלאומיות',
+
+    # Ministers
+    'שר הביטחון',
+    'שר החוץ',
+    'שר האנרגיה',
+    'שר האנרגיה והתשתיות',
+    'שר המדע',
+    'שר הרווחה',
+    'שר הכלכלה',
+    'שר הקליטה',
+    'שר הדתות',
+    'שר לביטחון הפנים',
+    'שר לביטחון פנים',
+    'שר המים',
+
+    'השרה להגנת הסביבה',
+    'השרה לחינוך',
+    'השרה למדע',
+    'השרה לחדשנות',
+    'השרה לשוויון חברתי',
+    'שרת הקליטה',
+    'שרת התחבורה',
+    'שרת הבריאות',
+    'שרת החינוך',
+    'שרת התיירות',
+    'שרת התרבות והספורט',
+
+    # Deputy ministers
+    'סגן שר',
+    'סגנית שר',
+    'סגן שר הביטחון',
+    'סגן שר האוצר',
+    'סגן שר החוץ',
+    'סגן שר הבריאות',
+    'סגן שר התחבורה',
+    'סגן שר המשפטים',
+    'סגן שר החינוך',
+    'ממלא מקום שר',
+    'מ״מ שר',
+
+    # Knesset roles
+    'יושב ראש הכנסת',
+    'יו״ר הכנסת',
+    'יו"ר הכנסת',
+    'סגן יושב ראש הכנסת',
+    'סגן יו״ר הכנסת',
+    'סגנית יו״ר הכנסת',
+    'מזכיר הכנסת',
+    'סגן מזכיר הכנסת',
+    'סגנית מזכיר הכנסת',
+    'מנהל הוועדה',
+    'מנהלת הוועדה',
+    'מזכיר הוועדה',
+    'מזכירת הוועדה',
+    'יועץ משפטי',
+    'יועצת משפטית',
+    'היועץ המשפטי',
+    'היועצת המשפטית',
+    'יועמ״ש הכנסת',
+    'יועמ"ש הוועדה',
+
+    # MK roles & political positions
+    'ח"כ',
+    'ח״כ',
+    'יו״ר הסיעה',
+    'יושב ראש הסיעה',
+    'ראש האופוזיציה',
+    'ראש הקואליציה',
+    'רכז הקואליציה',
+    'רכז האופוזיציה',
+    'מזכ״ל המפלגה',
+    'מ״מ יו״ר',
+
+    # Government & authority roles
+    'מנכ״ל המשרד',
+    'מנכ"ל המשרד',
+    'מנכ״ל',
+    'מנכ"ל',
+    'סמנכ״ל',
+    'סמנכ"ל',
+    'המשנה למנכ״ל',
+    'המשנה למנכ"ל',
+    'ראש הרשות',
+    'מפקד מחוז',
+    'קצין אגף',
+    'ראש אגף',
+    'סגן ראש אגף',
+    'ממונה על',
+    'ממונה תחום',
+    'מנהל תחום',
+    'מנהל מחלקה',
+    'ראש מחלקה',
+
+    # External roles that appear often
+    'מבקר המדינה',
+    'נציב שירות המדינה',
+    'נציב הכבאות',
+    'דובר הכנסת',
+    'מבקר הכנסת',
+    'מבקר המשרד',
+
+    # General labels to remove
+    'מוזמנים',
+    'מוזמן',
+    'אורחים',
+    'נוכחו',
+    'נכחו',
+    'רשם הישיבה',
+    'השר',
+    'השרה',
+    'החינוך, התרבות והספורט',
+    'התרבות והספורט',
+    ',',
+    'מזכירת הכנסת',
+    'לאיכות הסביבה',
+    'לאזרחים ותיקים',
+    'שר המודיעין',
+    'ופיתוח הכפר',
+    'ראש הממשלה',
+    'שר התשתיות',
+    'שר העבודה והרווחה',
+    'סגן',
+    'סגנית',
+    'שרת המשפטים',
+    'ופיתוח הכפר',
+    'עו"ד',
+    'הלאומיות',
+    'שר התשתיות',
+    '(יו"ר הוועדה המסדרת)',
+    'והתכנון'
+
 }
 
 
@@ -61,6 +287,16 @@ HEBROW_HUNDREDS = {
 }
 
 
+
+START_WITH = ['סדר', 'הישיבה','חברי', 'ייעוץ', 'מנהלי', 'רישום', 'הודעה','.לא','אני','אמרתי', 'אדוני', 'הביטחון','אבל','מדובר', 'הנושא','דקה','מובילה','לקריאה', 'יש','אוקיי',
+              'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'כ', 'ל', 'מ', 'נ', 'ס', 'ע', 'פ', 'צ', 'ק', 'ר', 'ש', 'ת', 'ועוד', 'התשובה', 'ואני', 'נעבור', 'לכן', 'אולי', 
+              'בכלל','והטכנולוגיה','הצעת','קריאת','שאלתי','במלים','אנחנו', 'זו', 'עכשיו', 'להעביר', 'הצעת', 'ובכלל', 'לכן', 'נעבור', 'בואו', 'תיכף', 'בורג', 'התבררו', 'אז', 'בפרשת', 
+              'הבנתי', 'דבר', 'על', 'וברשותך', 'או', 'אסיים', 'בסדר.', 'זה','לא', 'אגיד', 'אתן', 'אלו', 'הנקודה','הצעה', 'ולכן', 'קוראת', 'הוא', 'האם', 'העניין', 'הדברים', 'הדבר', 'היום', 'הטענה',
+              'הכוונה', 'הכרעה', 'החלטה', 'החלטה', 'היא', 'היא', 'הייתי', 'הייתם', 'הייתן', 'היית', 'לא.','לגבי', 'הסעיף', 'אם','החוזר', 'שאלתי', 'מנהל/ת', 'מנהל', 'השאלת', 'דוגמה', 'והמשפט'
+              'ס–התש"ס–2000;', 'בוודאי.', 'וצריך', 'הנה', 'רשמת']
+
+
+
 def process_file(filename):
     """Process a single file and return a dictionary with protocol info or None."""
     result = FileParser(filename).parse_filename()
@@ -74,11 +310,14 @@ def process_file(filename):
                 "protocol_number": protocol.protocol_number,
                 "chair": protocol.yor_hankest,
                 "filename": filename,
-                "Speakers": protocol.colon_sentences
+                "Speeches": protocol.speeches
             }
     else:
         print(f"Filename: {filename} => Invalid format")
     return None
+
+
+
 
 
 
@@ -122,8 +361,11 @@ class Protocol:
             return
         
         self.yor_hankest = self._extract_yor()
-        self.colon_sentences = self._extract_colon_sentences()
+        self.speakers = self._extract_speakers_names()
+        self.speeches = self._extract_speeches()
 
+
+    
     def _extract_protocol_number(self):
         """Extract the protocol number from the document."""
         try:
@@ -198,26 +440,262 @@ class Protocol:
 
     
     def _extract_yor(self):
-        """Extract only the first chairperson's full name from the document."""
-        text = "\n".join(p.text for p in self.doc.paragraphs)
-
-
-        match = re.search(r'היו"ר\s+([א-ת\"\'״׳\.\-\s]+?)(:|\n|מוזמנים|$)', text)
-        if match:
-            full_name = match.group(1).strip()
-
-            for line in full_name.splitlines():
-                line = line.strip()
-                if line:
-                    return line
-        return "Unknown"
-
-
-    def _extract_colon_sentences(self):
         """
-        Extract paragraphs that:
-        - end with a colon ':'
-        - contain at least one run that is bold OR underlined
+        Extract the chairperson's name using multiple patterns:
+
+        Priority:
+        1) 'חברי הוועדה: <name> – היו"ר'
+        2) היו"ר <name>:
+        3) << >> / < > cases
+        4) יו"ר / יו״ר / יור formats
+        5) fallback: first speaker with colon
+        """
+
+     
+        text = "\n".join(p.text.strip() for p in self.doc.paragraphs if p.text.strip())
+
+  
+        text_clean = re.sub(r'[<>{}]+', ' ', text)
+        text_clean = re.sub(r'\s+', ' ', text_clean)
+
+
+        opening_pattern = (
+            r'דברי\s+פתיחה[:\s]+(?:חבר(?:ת)?\s+הכנסת\s+)?'
+            r'([א-ת\"\'״׳\(\)\s\-]+?)\s*[-–]\s*יו"?ר'
+        )
+
+        m = re.search(opening_pattern, text_clean)
+        if m:
+            return m.group(1).strip()
+        
+        committee_pattern = (
+            r'חברי הוועדה[:\s]+([א-ת\"\'״׳\(\)\s\-]+?)\s*[–—\-]\s*(?:היו"ר|יו"ר|יו״ר|יור)'
+        )
+
+        m = re.search(committee_pattern, text_clean)
+        if m:
+            return m.group(1).strip()
+
+        chair_patterns = [
+            r'היו"ר\s+([א-ת\"\'״׳\.\-\s]+?):',
+            r'יו"ר\s+([א-ת\"\'״׳\.\-\s]+?):',
+            r'יו״ר\s+([א-ת\"\'״׳\.\-\s]+?):',
+            r'יור\s+([א-ת\"\'״׳\.\-\s]+?):',
+        ]
+
+        for pat in chair_patterns:
+            m = re.search(pat, text_clean)
+            if m:
+                return m.group(1).strip()
+
+        for line in text.split("\n"):
+            if ":" in line:
+                clean = re.sub(r'[<>{}]+', '', line).strip()
+                if any(x in clean for x in ['היו"ר', 'יו"ר', 'יו״ר', 'יור']):
+                    left = clean.split(":")[0]
+                    for x in ['היו"ר', 'יו"ר', 'יו״ר', 'יור']:
+                        left = left.replace(x, "")
+                    return left.strip()
+
+        return "לא ידוע"
+    
+
+    
+
+    def _normalize_speaker_from_text(self, text: str):
+        """Return cleaned speaker name if text represents a speaker line."""
+        candidate = text.strip()
+        if not candidate.endswith(':'):
+            return None
+
+        candidate = candidate.rstrip(':').strip()
+        if candidate in INVALID_TALKERS_NAMES:
+            return None
+
+        clean_text = candidate
+        for suffix in GET_RID_OF_SUFFIX:
+            clean_text = clean_text.replace(suffix, "").strip()
+
+        clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
+        clean_text = " ".join(clean_text.split())
+        if not clean_text or clean_text in INVALID_TALKERS_NAMES:
+            return None
+
+        parts = [p.strip() for p in clean_text.split(' ') if p.strip()]
+        if len(parts) < 2 or len(parts) > 5:
+            return None
+
+        return " ".join(parts)
+
+    def _is_heading_paragraph(self, para):
+        """Detect paragraphs that are likely headings (centered/bold labels)."""
+        text = para.text.strip()
+        if not text:
+            return True
+        if para.paragraph_format.alignment == WD_ALIGN_PARAGRAPH.CENTER:
+            return True
+        runs = [run for run in para.runs if run.text.strip()]
+        if runs and all(run.bold for run in runs):
+            return True
+        return False
+
+
+    
+    def _is_single_token_enum(self, text: str, idx: int):
+        """Detect enumerations like 'א.' or '1.' to avoid sentence splits."""
+        j = idx - 1
+        while j >= 0 and text[j].isspace():
+            j -= 1
+        if j < 0:
+            return False
+        start = j
+        while start - 1 >= 0 and text[start - 1].isalpha():
+            start -= 1
+        token = text[start:j + 1]
+        if len(token) == 1 and (start == 0 or text[start - 1].isspace() or text[start - 1] in '(["\''):
+            return True
+        if token.isdigit():
+            if start == 0 or text[start - 1].isspace() or text[start - 1] in '(["\'':
+                return True
+        return False
+    
+    def _clean_sentence(self, sentence: str):
+        """Remove English letters and collapse repeated symbols."""
+        if not sentence:
+            return sentence
+
+        cleaned = re.sub(r'[A-Za-z]', '', sentence)
+        cleaned = re.sub(r'(?:-\s*){2,}', ' ', cleaned)
+        cleaned = re.sub(r'-{2,}', ' ', cleaned)
+        cleaned = re.sub(r'-\s*$', '', cleaned)
+        cleaned = re.sub(r'([^\w\s\u0590-\u05FF-])\1+', r'\1', cleaned)
+        cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+        return cleaned
+
+    
+    def _split_into_sentences(self, text: str):
+        """Split a text block into crude sentences (no filtering)."""
+        if not text:
+            return []
+
+        normalized = text.replace('\r', ' ').replace('\n', ' ')
+        normalized = re.sub(r'\s+', ' ', normalized).strip()
+        if not normalized:
+            return []
+
+        sentences = []
+        buffer = []
+        length = len(normalized)
+
+        sentence_endings = {'.', '!'}
+
+        i = 0
+        while i < length:
+            ch = normalized[i]
+            buffer.append(ch)
+
+            if ch in sentence_endings:
+                prev_char = normalized[i - 1] if i > 0 else ''
+                next_char = normalized[i + 1] if i + 1 < length else ''
+
+                if prev_char.isdigit() and next_char.isdigit():
+                    i += 1
+                    continue
+
+                if ch == '.' and self._is_single_token_enum(normalized, i):
+                    i += 1
+                    continue
+
+                sentence = ''.join(buffer).strip()
+                if sentence:
+                    sentences.append(self._clean_sentence(sentence))
+                buffer = []
+
+            i += 1
+
+        tail = ''.join(buffer).strip()
+        if tail:
+            sentences.append(self._clean_sentence(tail))
+
+        return sentences
+
+
+    def _extract_speeches(self):
+        """Attach textual content to the speakers identified in the document."""
+        try:
+            doc = self.doc if hasattr(self, "doc") else Document(self.filepath)
+        except Exception as e:
+            print(f"Error opening {self.filepath} for speeches: {e}")
+            return []
+
+        speeches = []
+        current_speaker = None
+        current_chunks = []
+
+        def flush_current():
+            if current_speaker and current_chunks:
+                full_text = " ".join(current_chunks).strip()
+                speeches.append({
+                    "speaker": current_speaker,
+                    "text": full_text,
+                    "sentences": self._split_into_sentences(full_text)
+                })
+
+        for para in doc.paragraphs:
+            if self._is_heading_paragraph(para):
+                continue
+            text = para.text.strip()
+            if not text:
+                continue
+
+            speaker_name = self._normalize_speaker_from_text(text)
+            if speaker_name:
+                flush_current()
+                current_speaker = speaker_name
+                current_chunks = []
+                continue
+
+            if current_speaker:
+                current_chunks.append(text)
+
+        flush_current()
+        return speeches
+
+
+    def extract_text_between_markers(self,text):
+        """
+        Extract text from a line:
+        - If <something>, return 'something'
+        - If <<s1>> something <<s2>>, return 'something'
+        """
+        text = text.strip()
+        
+
+        double_match = re.match(r'^<{2}.*?>{2}\s*(.*?)\s*<{2}.*?}>{2}$', text)
+        if double_match:
+            return double_match.group(1).strip()
+
+        single_match = re.match(r'^<{1,2}\s*(.*?)\s*>{1,2}$', text)
+        if single_match:
+            return single_match.group(1).strip()
+        
+        return None
+    
+
+    def _has_markers(self, text):
+        return re.findall(r'<{1,2}.*?>{1,2}', text)
+
+
+    def _parse_double_markers(self, text, markers):
+        first_end = text.find(markers[0]) + len(markers[0])
+        last_start = text.rfind(markers[-1])
+        return text[first_end:last_start].strip()
+    
+
+    def _extract_speakers_names(self):
+        """
+        Extract paragraphs that contain ':' and clean potential speaker names.
+        Handles <something> and <<s1>> something <<s2>> correctly.
         """
         try:
             doc = self.doc if hasattr(self, "doc") else Document(self.filepath)
@@ -226,31 +704,83 @@ class Protocol:
             return []
 
         results = []
+
         for para in doc.paragraphs:
             text = para.text.strip()
-            if not text.endswith(':'):
+            if ':' not in text:
                 continue
 
-            clean_text = text.rstrip(':').strip()
-            if clean_text not in INVALID_TALKERS_NAMES:
+     
+            markers = self._has_markers(text)
+
+            if markers:
+        
+                if len(markers) == 2:
+                    clean_text = self._parse_double_markers(text, markers)
+                else:
+                    clean_text = self.extract_text_between_markers(markers[0])
+
+                if not clean_text:
+                    continue
+
+                if clean_text in INVALID_TALKERS_NAMES:
+                    continue
+
                 for suffix in GET_RID_OF_SUFFIX:
                     clean_text = clean_text.replace(suffix, "").strip()
-                    
+
+         
                 clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
+
+                clean_text = clean_text.rstrip(':').strip()
+
                 clean_text = " ".join(clean_text.split())
+
+            
+                parts = clean_text.split()
+                if parts and  parts[0] in START_WITH:
+                    continue
+
+                if 2 <= len(parts) <= 3:
+                    results.append(clean_text)
+                continue  
+
+
+            clean_text = text.split(":", 1)[0].strip()
+            if clean_text in INVALID_TALKERS_NAMES:
+                continue
+
+            for suffix in GET_RID_OF_SUFFIX:
+                clean_text = clean_text.replace(suffix, "").strip()
+
+            clean_text = re.sub(r'\([^)]*\)', '', clean_text).strip()
+    
+            parts = clean_text.split()
+
+            if parts and parts[0] in START_WITH:
+                continue
+
+            if 2 <= len(parts) <= 3:
                 results.append(clean_text)
 
-        seen = set()
+
+            
+       
         unique = []
+        seen = set()
         for s in results:
-            if len(s) < 50 and len(s) > 5 and  s not in seen :
+            if 5 < len(s) < 50 and s not in seen:
                 seen.add(s)
                 unique.append(s)
+
+
+        if not unique:
+            with open("debug_files.txt", "a", encoding="utf-8") as f:
+                f.write(self.filepath + "\n")
 
         return unique
 
 
-        
 
 class ProtocolsCollection:
     def __init__(self):
@@ -260,20 +790,108 @@ class ProtocolsCollection:
         self.protocols.append(protocol)
 
 
+# debug_files = [
+#         "16_ptv_577443.docx",
+#         # "16_ptv_577758.docx",
+#         # "16_ptv_491962.docx",
+#         # "20_ptv_490139.docx",
+#         # "15_ptv_498215.docx",
+# ]
 
+
+
+            
+
+def tokenize_hebrew(sentence):
+    s = sentence.strip()
+
+    s = re.sub(r"\s+", " ", s)
+
+
+    s = re.sub(r"([א-ת]+)(['״׳\"])([א-ת]+)", r"\1<GRSH>\3", s)
+
+    s = re.sub(r"([א-ת]+)-([א-ת]+)", r"\1<MAKAF>\2", s)
+
+
+    s = re.sub(r"([.,!?;])", r" \1 ", s)
+
+
+    s = re.sub(r"\s+:", " :", s)
+
+    tokens = s.split()
+
+    restored = []
+    for t in tokens:
+        t = t.replace("<GRSH>", "'")
+        t = t.replace("<MAKAF>", "-")
+        restored.append(t)
+
+    return restored
+
+
+def write_chunk_to_list(chunk):
+    """Process a chunk of protocols and return a list of JSON objects"""
+    lines = []
+    for p in chunk:
+        protocol_name = p.get("filename", "")
+        knesset_number = p.get("knesset_number", "")
+        protocol_type = p.get("protocol_type", "")
+        protocol_number = p.get("protocol_number", "")
+        protocol_chairman = p.get("chair", "")
+        speeches = p.get("Speeches", [])
+        for speech in speeches:
+            speaker = speech["speaker"]
+            sentences = speech["sentences"]
+            for sentence in sentences:
+                clean_text = sentence.strip()
+                if clean_text == "" or re.fullmatch(r"[-–—\s]+", clean_text):
+                    continue
+                if re.search(r"–(\s*–)+", clean_text):
+                    continue
+                tokens = tokenize_hebrew(clean_text)
+                if len(tokens) < 4:
+                    continue
+                line = {
+                    "protocol_name": protocol_name,
+                    "knesset_number": knesset_number,
+                    "protocol_type": protocol_type,
+                    "protocol_number": protocol_number,
+                    "protocol_chairman": protocol_chairman,
+                    "speaker_name": speaker,
+                    "sentence_text": " ".join(tokens)
+                }
+                lines.append(line)
+    return lines
 
 if __name__ == "__main__":
-    fl = FileLoader()
+    parser = argparse.ArgumentParser(description="Process Knesset protocols into JSONL.")
+    parser.add_argument("input_dir", type=str, help="Path to the input directory with files")
+    parser.add_argument("output_file", type=str, help="Path to the output JSONL file")
+    args = parser.parse_args()
+
+    fl = FileLoader(args.input_dir)
     files = fl.ListFiles()
 
+    with Pool(processes=cpu_count()) as pool:
+        results = pool.map(process_file, files)
 
-    # with Pool(processes=cpu_count()) as pool:
-    #     protocols = pool.map(process_file, files)
+    protocols = [p for p in results if p]
 
-    protocols = [process_file(f) for f in files]
-    protocols = [p for p in protocols if p is not None]
+    if len(protocols) == 0:
+        print("No protocols found!")
+    else:
+        num_processes = cpu_count()
+        chunk_size = (len(protocols) + num_processes - 1) // num_processes
+        chunks = [protocols[i:i + chunk_size] for i in range(0, len(protocols), chunk_size)]
 
+        with Pool(processes=num_processes) as pool:
+            all_lines = pool.map(write_chunk_to_list, chunks)
 
-    for p in protocols:
-        if p:
-            print(f"Knesset: {p['knesset_number']}, Type: {p['protocol_type']}, Protocol Number: {p['protocol_number']}, Chair: {p['chair']}, file: {p['filename']}, Speakers: {p['Speakers']}")
+        all_lines_flat = [item for sublist in all_lines for item in sublist]
+
+        with open(args.output_file, "w", encoding="utf-8") as f:
+            for line in all_lines_flat:
+                f.write(json.dumps(line, ensure_ascii=False) + "\n")
+
+        print(f"\nJSONL file saved to {args.output_file}")
+    
