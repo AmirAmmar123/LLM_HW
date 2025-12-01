@@ -2,7 +2,7 @@ import json
 import string
 import math
 from collections import Counter, defaultdict
-
+import pandas as pd
 
 class ReadJSONLData:
     """
@@ -33,6 +33,7 @@ class ReadJSONLData:
                 self.sentences_no_punct.append(no_punc)
 
                 self.sentences.append(sentence)
+                
 
 
 
@@ -57,7 +58,7 @@ class TrigramModel:
 
         self._build_model(sentences)
 
-    def _build_model(self, sentences):
+    def _build_model(self, sentences:list)-> None:
         for tokens in sentences:
             if not tokens:
                 continue
@@ -87,7 +88,7 @@ class TrigramModel:
         return (count + 1) / (denom + self.V)
 
 
-    def _interp_prob(self, w2, w1, w):
+    def _interp_prob(self, w2:str, w1:str, w:str)-> float:
         # Trigram
         tri_count = self.trigram[(w2, w1)][w]
         tri_denom = sum(self.trigram[(w2, w1)].values())
@@ -149,26 +150,42 @@ class TrigramModel:
         return best_word, math.log(best_prob)
 
 
-class Trigram_LM:
+class LM_APP:
 
     def __init__(self, jsonData: ReadJSONLData):
         self.full = TrigramModel(jsonData.sentences_tokens)
         self.no_punc = TrigramModel(jsonData.sentences_no_punct)
 
-    def calculate_prob_of_sentence(self, sentence_str: str, use_punc=False):
+    def calculate_prob_of_sentence(self, sentence_str: str, use_punc=False)-> float:
         model = self.full if use_punc else self.no_punc
         return model.calculate_prob_of_sentence(sentence_str)
 
-    def generate_next_token(self, prefix_str: str, use_punc=False):
+    def generate_next_token(self, prefix_str: str, use_punc=False)-> tuple:
         model = self.full if use_punc else self.no_punc
         return model.generate_next_token(prefix_str)
 
-    
+    def get_k_n_t_collocations(self, k:int, n:int ,t:float, corpus: pd.DataFrame, type:str)-> list:
+        """
+        input: k - number of collocations
+               n - length of collocation
+               t - threshold for the minimum appearance of the collocation in the corpus
+               corpus - pandas DataFrame
+               type - "frequency" or "tfidf"
+
+        output: list of k collocations of length n based on the specified type
+        """
+
+
 
 
 if __name__ == "__main__":
     data_path = "./knesset_corpus.jsonl"
     jsonData = ReadJSONLData(data_path)
 
-    model = Trigram_LM(jsonData)
-    print(model.generate_next_token("ראשון", False))
+    # model = LM_APP(jsonData)
+    # print(model.generate_next_token("יושב", False))
+
+
+    corpus_full = jsonData.df[['protocol', 'tokens']].copy()
+    corpus_no_punc = jsonData.df[['protocol', 'no_punc_tokens']].copy()
+    corpus_no_punc = corpus_no_punc.rename(columns={'no_punc_tokens': 'tokens'})
