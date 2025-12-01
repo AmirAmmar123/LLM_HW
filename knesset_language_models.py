@@ -43,13 +43,12 @@ class TrigramModel:
         self.bigram = defaultdict(Counter)
         self.trigram = defaultdict(Counter)
 
-
-        self.vocab = {"s_0", "s_1", "s_end"}
+        # Start + End tokens
+        self.vocab = {"s_0", "s_1", "s_2"}
 
         self.total_unigrams = 0
         self.V = 0
 
-        # Interpolation weights (chosen arbitrarily; explained in report)
         self.lambdas = {
             "tri": 0.6,
             "bi": 0.25,
@@ -63,16 +62,13 @@ class TrigramModel:
             if not tokens:
                 continue
 
-            # Add dummy start tokens and end token (internal only)
-            padded = ["s_0", "s_1"] + tokens + ["s_end"]
+            # Add start+end tokens
+            padded = ["s_0", "s_1"] + tokens + ["s_2"]
 
-            # Expand vocabulary
             self.vocab.update(padded)
 
-            # Build counts
             for i, w in enumerate(padded):
                 self.unigram[w] += 1
-                self.total_unigrams += 1
 
                 if i >= 1:
                     self.bigram[padded[i - 1]][w] += 1
@@ -82,6 +78,8 @@ class TrigramModel:
                     prev1 = padded[i - 1]
                     self.trigram[(prev2, prev1)][w] += 1
 
+        # FIX: correct unigram total
+        self.total_unigrams = sum(self.unigram.values())
         self.V = len(self.vocab)
 
     
@@ -118,7 +116,7 @@ class TrigramModel:
         if not tokens:
             return float("-inf")
 
-        padded = ["s_0", "s_1"] + tokens + ["s_end"]
+        padded = ["s_0", "s_1"] + tokens + ["s_2"]
 
         logp = 0.0
         for i in range(2, len(padded)):
@@ -128,7 +126,7 @@ class TrigramModel:
         return logp
 
     def generate_next_token(self, prefix: str):
-        """Return (best_token, log_prob)."""
+        """Return (best_token, log_prob) using only real words (no dummy tokens)."""
 
         tokens = prefix.strip().split()
         padded = ["s_0", "s_1"] + tokens
@@ -139,18 +137,16 @@ class TrigramModel:
         best_word = None
         best_prob = -1
 
-        for w in self.vocab:
-            # Do NOT return dummy tokens
-            if w in {"s_0", "s_1", "s_end"}:
-                continue
+        # Only consider real words from training vocab (exclude s_0, s_1, s_2)
+        real_words = self.vocab - {"s_0", "s_1", "s_2"}
 
+        for w in real_words:
             p = self._interp_prob(w2, w1, w)
             if p > best_prob:
                 best_prob = p
                 best_word = w
 
         return best_word, math.log(best_prob)
-
 
 
 class Trigram_LM:
@@ -166,6 +162,7 @@ class Trigram_LM:
     def generate_next_token(self, prefix_str: str, use_punc=False):
         model = self.full if use_punc else self.no_punc
         return model.generate_next_token(prefix_str)
+
     
 
 
@@ -174,4 +171,4 @@ if __name__ == "__main__":
     jsonData = ReadJSONLData(data_path)
 
     model = Trigram_LM(jsonData)
-    print(model.generate_next_token("ראש הממשלה", False))
+    print(model.generate_next_token("ראשון", False))
