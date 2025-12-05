@@ -5,6 +5,7 @@ from collections import Counter, defaultdict
 import pandas as pd
 import os
 import sys
+import random
 
 class ReadJSONLData:
     """
@@ -35,7 +36,7 @@ class ReadJSONLData:
                 })
         self.df = pd.DataFrame(data)
 
-class TrigramModel:
+class Trigram_LM:
     def __init__(self, sentences):
         self.unigram = Counter()
         self.bigram = defaultdict(Counter)
@@ -50,6 +51,7 @@ class TrigramModel:
             "uni": 0.15
         }
         self._build_model(sentences)
+
 
     def _build_model(self, sentences):
         for tokens in sentences:
@@ -126,8 +128,8 @@ class LM_APP:
         self.jsonData = jsonData
 
     def build_models(self):
-        self.full = TrigramModel(self.jsonData.df['tokens'].tolist())
-        self.no_punc = TrigramModel(self.jsonData.df['no_punc_tokens'].tolist())
+        self.full = Trigram_LM(self.jsonData.df['tokens'].tolist())
+        self.no_punc = Trigram_LM(self.jsonData.df['no_punc_tokens'].tolist())
 
     def calculate_prob_of_sentence(self, sentence_str: str, use_punc=False):
         model = self.full if use_punc else self.no_punc
@@ -213,6 +215,41 @@ class LM_APP:
         else:
             raise ValueError("Invalid type: must be 'frequency' or 'tfidf'")
 
+    def mask_tokens_in_sentences(self, sentences: list, x: int):
+        """Return masked sentences according to mask_percentage."""
+        masked = []
+
+        for sent in sentences:
+            tokens = sent.split()
+            L = len(tokens)
+
+            if L == 0:
+                masked.append(sent)
+                continue
+
+            #  10 => 0.1% 
+            k = max(1, int((x / 100) * L))
+
+            # choose random indices
+            mask_indices = set(random.sample(range(L), k))
+
+            new_tokens = [
+                ("[*]" if i in mask_indices else t)
+                for i, t in enumerate(tokens)
+            ]
+
+            masked.append(" ".join(new_tokens))
+
+        return masked
+
+    def sample_10_sentences_randomly(self):
+        # filter only sentences with >= 5 tokens
+        df_filtered = self.jsonData.df[self.jsonData.df['tokens'].apply(len) >= 5]
+
+        # sample exactly 10
+        return df_filtered['sentence'].sample(10, random_state=None).tolist()
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python knesset_language_models.py <path/to/corpus_file_name.jsonl> <path/to/output_dir>")
@@ -225,62 +262,81 @@ if __name__ == "__main__":
     jsonData = ReadJSONLData(jsonl_path)
     model = LM_APP(jsonData)
     model.build_models()
-    print(model.generate_next_token("היום יום", use_punc=False))
-    # Prepare corpora
-    corpus_full = jsonData.df[['protocol', 'tokens']].copy()
-    corpus_no_punc = jsonData.df[['protocol', 'no_punc_tokens']].copy()
-    corpus_no_punc = corpus_no_punc.rename(columns={'no_punc_tokens': 'tokens'})
+    #print(model.generate_next_token("את", use_punc=False))
+    #print(model.generate_next_token("את", use_punc=True))
 
-    # Output file
-    collocations_path = os.path.join(output_dir, "knesset_collocations.txt")
+    # model.mask_tokens_in_sentences(["שקשוקה זה לחלשים"], 10)
 
-    with open(collocations_path, 'w', encoding='utf-8') as f:
-        # Two-gram
-        f.write("Two-gram collocations:\n")
-        f.write("Frequency:\n")
-        f.write("Full corpus:\n")
-        colls = model.get_k_n_t_collocations(10, 2, 10, corpus_full, "frequency")
-        for c in colls:
-            f.write(c + "\n")
-        f.write("\n")
-        f.write("No punctuation corpus:\n")
-        colls = model.get_k_n_t_collocations(10, 2, 10, corpus_no_punc, "frequency")
-        for c in colls:
-            f.write(c + "\n")
-        f.write("\n")
-        f.write("TF-IDF:\n")
-        f.write("Full corpus:\n")
-        colls = model.get_k_n_t_collocations(10, 2, 10, corpus_full, "tfidf")
-        for c in colls:
-            f.write(c + "\n")
-        f.write("\n")
-        f.write("No punctuation corpus:\n")
-        colls = model.get_k_n_t_collocations(10, 2, 10, corpus_no_punc, "tfidf")
-        for c in colls:
-            f.write(c + "\n")
-        f.write("\n")
+    sampled_sentences = model.sample_10_sentences_randomly()
 
-        # Four-gram
-        f.write("Four-gram collocations:\n")
-        f.write("Frequency:\n")
-        f.write("Full corpus:\n")
-        colls = model.get_k_n_t_collocations(10, 4, 5, corpus_full, "frequency")
-        for c in colls:
-            f.write(c + "\n")
-        f.write("\n")
-        f.write("No punctuation corpus:\n")
-        colls = model.get_k_n_t_collocations(10, 4, 5, corpus_no_punc, "frequency")
-        for c in colls:
-            f.write(c + "\n")
-        f.write("\n")
-        f.write("TF-IDF:\n")
-        f.write("Full corpus:\n")
-        colls = model.get_k_n_t_collocations(10, 4, 5, corpus_full, "tfidf")
-        for c in colls:
-            f.write(c + "\n")
-        f.write("\n")
-        f.write("No punctuation corpus:\n")
-        colls = model.get_k_n_t_collocations(10, 4, 5, corpus_no_punc, "tfidf")
-        for c in colls:
-            f.write(c + "\n")
-        f.write("\n")
+    masked_sentences = model.mask_tokens_in_sentences(sampled_sentences, 10)
+
+    orig_path = os.path.join(output_dir, "original_sampled_sents.txt")
+    with open(orig_path, "w", encoding="utf-8") as f:
+        for sent in sampled_sentences:
+            f.write(sent + "\n")
+
+    masked_path = os.path.join(output_dir, "masked_sampled_sents.txt")
+    with open(masked_path, "w", encoding="utf-8") as f:
+        for sent in masked_sentences:
+            f.write(sent + "\n")
+
+
+    #Prepare corpora
+    # corpus_full = jsonData.df[['protocol', 'tokens']].copy()
+    # corpus_no_punc = jsonData.df[['protocol', 'no_punc_tokens']].copy()
+    # corpus_no_punc = corpus_no_punc.rename(columns={'no_punc_tokens': 'tokens'})
+
+    # # Output file
+    # collocations_path = os.path.join(output_dir, "knesset_collocations.txt")
+
+    # with open(collocations_path, 'w', encoding='utf-8') as f:
+    #     # Two-gram
+    #     f.write("Two-gram collocations:\n")
+    #     f.write("Frequency:\n")
+    #     f.write("Full corpus:\n")
+    #     colls = model.get_k_n_t_collocations(10, 2, 10, corpus_full, "frequency")
+    #     for c in colls:
+    #         f.write(c + "\n")
+    #     f.write("\n")
+    #     f.write("No punctuation corpus:\n")
+    #     colls = model.get_k_n_t_collocations(10, 2, 10, corpus_no_punc, "frequency")
+    #     for c in colls:
+    #         f.write(c + "\n")
+    #     f.write("\n")
+    #     f.write("TF-IDF:\n")
+    #     f.write("Full corpus:\n")
+    #     colls = model.get_k_n_t_collocations(10, 2, 10, corpus_full, "tfidf")
+    #     for c in colls:
+    #         f.write(c + "\n")
+    #     f.write("\n")
+    #     f.write("No punctuation corpus:\n")
+    #     colls = model.get_k_n_t_collocations(10, 2, 10, corpus_no_punc, "tfidf")
+    #     for c in colls:
+    #         f.write(c + "\n")
+    #     f.write("\n")
+
+    #     # Four-gram
+    #     f.write("Four-gram collocations:\n")
+    #     f.write("Frequency:\n")
+    #     f.write("Full corpus:\n")
+    #     colls = model.get_k_n_t_collocations(10, 4, 5, corpus_full, "frequency")
+    #     for c in colls:
+    #         f.write(c + "\n")
+    #     f.write("\n")
+    #     f.write("No punctuation corpus:\n")
+    #     colls = model.get_k_n_t_collocations(10, 4, 5, corpus_no_punc, "frequency")
+    #     for c in colls:
+    #         f.write(c + "\n")
+    #     f.write("\n")
+    #     f.write("TF-IDF:\n")
+    #     f.write("Full corpus:\n")
+    #     colls = model.get_k_n_t_collocations(10, 4, 5, corpus_full, "tfidf")
+    #     for c in colls:
+    #         f.write(c + "\n")
+    #     f.write("\n")
+    #     f.write("No punctuation corpus:\n")
+    #     colls = model.get_k_n_t_collocations(10, 4, 5, corpus_no_punc, "tfidf")
+    #     for c in colls:
+    #         f.write(c + "\n")
+    #     f.write("\n")
