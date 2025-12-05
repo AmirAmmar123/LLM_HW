@@ -1,0 +1,110 @@
+original_sentence: תודה רבה , אדוני סגן השר .
+masked_sentence: [*] רבה , אדוני סגן השר .
+full_sentence: אני רבה , אדוני סגן השר .
+full_tokens: אני
+no_punc_sentence: אני רבה , אדוני סגן השר .
+no_punc_tokens: אני
+probability of full sentence in full corpus: -40.94
+probability of full sentence in no_punc corpus: -33.70
+probability of no_punc sentence in full corpus: -40.94
+probability of no_punc sentence in no_punc corpus: -33.70
+
+original_sentence: אתה מסכים שיתקיים דיון במליאה .
+masked_sentence: [*] מסכים שיתקיים דיון במליאה .
+full_sentence: אני מסכים שיתקיים דיון במליאה .
+full_tokens: אני
+no_punc_sentence: אני מסכים שיתקיים דיון במליאה .
+no_punc_tokens: אני
+probability of full sentence in full corpus: -43.52
+probability of full sentence in no_punc corpus: -38.55
+probability of no_punc sentence in full corpus: -43.52
+probability of no_punc sentence in no_punc corpus: -38.55
+
+original_sentence: חשבון הנפש בשבוע האחרון היה חשבון נפש אישי , נדרש חשבון נפש אישי , ונדרש גם חשבון נפש של הבית הזה .
+masked_sentence: חשבון הנפש בשבוע [*] היה חשבון נפש אישי , נדרש חשבון נפש אישי , ונדרש גם חשבון [*] של הבית הזה .
+full_sentence: חשבון הנפש בשבוע , היה חשבון נפש אישי , נדרש חשבון נפש אישי , ונדרש גם חשבון , של הבית הזה .
+full_tokens: ,, ,
+no_punc_sentence: חשבון הנפש בשבוע את היה חשבון נפש אישי , נדרש חשבון נפש אישי , ונדרש גם חשבון את של הבית הזה .
+no_punc_tokens: את, את
+probability of full sentence in full corpus: -181.57
+probability of full sentence in no_punc corpus: -158.33
+probability of no_punc sentence in full corpus: -185.36
+probability of no_punc sentence in no_punc corpus: -170.21
+
+original_sentence: כבוד היושב-ראש , חברי הכנסת , אני לא יודע , הרבה אזרחים עכשיו צופים בנו והם מצפים לישועה ולגאולה .
+masked_sentence: כבוד היושב-ראש , חברי הכנסת , אני לא [*] , הרבה אזרחים עכשיו צופים בנו והם מצפים לישועה ולגאולה [*]
+full_sentence: כבוד היושב-ראש , חברי הכנסת , אני לא , , הרבה אזרחים עכשיו צופים בנו והם מצפים לישועה ולגאולה ,
+full_tokens: ,, ,
+no_punc_sentence: כבוד היושב-ראש , חברי הכנסת , אני לא רוצה , הרבה אזרחים עכשיו צופים בנו והם מצפים לישועה ולגאולה את
+no_punc_tokens: רוצה, את
+probability of full sentence in full corpus: -143.22
+probability of full sentence in no_punc corpus: -123.98
+probability of no_punc sentence in full corpus: -145.81
+probability of no_punc sentence in no_punc corpus: -135.70
+
+original_sentence: הוזזו תקציבים , הוא שמע אותנו .
+masked_sentence: הוזזו [*] , הוא שמע אותנו .
+full_sentence: הוזזו , , הוא שמע אותנו .
+full_tokens: ,
+no_punc_sentence: הוזזו את , הוא שמע אותנו .
+no_punc_tokens: את
+probability of full sentence in full corpus: -51.63
+probability of full sentence in no_punc corpus: -38.80
+probability of no_punc sentence in full corpus: -53.05
+probability of no_punc sentence in no_punc corpus: -44.74
+
+original_sentence: הרי אם המצב שם יתדרדר הוא יתפוצץ בפניה של ישראל , ולא בפניה של מצרים שעומדת מהצד בחיבוק ידיים .
+masked_sentence: הרי אם המצב שם יתדרדר הוא יתפוצץ בפניה של ישראל , ולא בפניה של מצרים שעומדת מהצד בחיבוק [*] [*]
+full_sentence: הרי אם המצב שם יתדרדר הוא יתפוצץ בפניה של ישראל , ולא בפניה של מצרים שעומדת מהצד בחיבוק , ,
+full_tokens: ,, ,
+no_punc_sentence: הרי אם המצב שם יתדרדר הוא יתפוצץ בפניה של ישראל , ולא בפניה של מצרים שעומדת מהצד בחיבוק את זה
+no_punc_tokens: את, זה
+probability of full sentence in full corpus: -165.16
+probability of full sentence in no_punc corpus: -151.85
+probability of no_punc sentence in full corpus: -166.58
+probability of no_punc sentence in no_punc corpus: -162.42
+
+original_sentence: לכן , אני אומר שהוא לא ייאלץ מחר לבחור בין להיות יושב-ראש ההסתדרות לבין להיות חבר הכנסת , אלא מהיום שבו הוא מודיע שהוא רץ לבחירות הבאות .
+masked_sentence: לכן , אני אומר שהוא לא [*] מחר לבחור בין להיות יושב-ראש ההסתדרות לבין להיות חבר הכנסת , אלא מהיום שבו הוא מודיע שהוא [*] לבחירות הבאות .
+full_sentence: לכן , אני אומר שהוא לא , מחר לבחור בין להיות יושב-ראש ההסתדרות לבין להיות חבר הכנסת , אלא מהיום שבו הוא מודיע שהוא , לבחירות הבאות .
+full_tokens: ,, ,
+no_punc_sentence: לכן , אני אומר שהוא לא לא מחר לבחור בין להיות יושב-ראש ההסתדרות לבין להיות חבר הכנסת , אלא מהיום שבו הוא מודיע שהוא לא לבחירות הבאות .
+no_punc_tokens: לא, לא
+probability of full sentence in full corpus: -211.37
+probability of full sentence in no_punc corpus: -190.63
+probability of no_punc sentence in full corpus: -214.91
+probability of no_punc sentence in no_punc corpus: -202.21
+
+original_sentence: אני רוצה לומר גם שהסצנריו שאנחנו מתאים פה בדו"ח ומבקשים להסדיר אותו , הוא איננו הסצנריו של צוק איתן .
+masked_sentence: אני רוצה לומר גם שהסצנריו שאנחנו [*] פה בדו"ח ומבקשים להסדיר אותו , הוא [*] הסצנריו של צוק איתן .
+full_sentence: אני רוצה לומר גם שהסצנריו שאנחנו , פה בדו"ח ומבקשים להסדיר אותו , הוא , הסצנריו של צוק איתן .
+full_tokens: ,, ,
+no_punc_sentence: אני רוצה לומר גם שהסצנריו שאנחנו לא פה בדו"ח ומבקשים להסדיר אותו , הוא לא הסצנריו של צוק איתן .
+no_punc_tokens: לא, לא
+probability of full sentence in full corpus: -151.82
+probability of full sentence in no_punc corpus: -133.31
+probability of no_punc sentence in full corpus: -153.38
+probability of no_punc sentence in no_punc corpus: -144.28
+
+original_sentence: רויטל , נתן , האם זה נכון שמבטלים את המענק לרופאים ?
+masked_sentence: רויטל , נתן , האם זה נכון שמבטלים את [*] לרופאים ?
+full_sentence: רויטל , נתן , האם זה נכון שמבטלים את , לרופאים ?
+full_tokens: ,
+no_punc_sentence: רויטל , נתן , האם זה נכון שמבטלים את זה לרופאים ?
+no_punc_tokens: זה
+probability of full sentence in full corpus: -91.11
+probability of full sentence in no_punc corpus: -71.22
+probability of no_punc sentence in full corpus: -91.02
+probability of no_punc sentence in no_punc corpus: -75.85
+
+original_sentence: בכל מקרה , כמו שאמר חבר הכנסת פינדרוס , יש מקום לבדוק את הנושא של
+masked_sentence: בכל מקרה , כמו שאמר חבר הכנסת פינדרוס , יש מקום לבדוק את הנושא [*]
+full_sentence: בכל מקרה , כמו שאמר חבר הכנסת פינדרוס , יש מקום לבדוק את הנושא ,
+full_tokens: ,
+no_punc_sentence: בכל מקרה , כמו שאמר חבר הכנסת פינדרוס , יש מקום לבדוק את הנושא של
+no_punc_tokens: של
+probability of full sentence in full corpus: -101.26
+probability of full sentence in no_punc corpus: -90.62
+probability of no_punc sentence in full corpus: -102.53
+probability of no_punc sentence in no_punc corpus: -96.42
+
