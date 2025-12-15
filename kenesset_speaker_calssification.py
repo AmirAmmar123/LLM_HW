@@ -2,15 +2,20 @@ import json
 import logging
 from collections import Counter
 from typing import Tuple, Set
+import random
+import numpy as np
 
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%H:%M:%S'
+    datefmt='%H:%M:%S',
+    handlers=[
+        logging.FileHandler("output.log", mode='w', encoding='utf-8'),
+        logging.StreamHandler()
+    ]
 )
 logger = logging.getLogger(__name__)
-
 
 class TopTwoSpeakers:
     """Finds the two most common speakers in the corpus."""
@@ -139,7 +144,36 @@ class BinaryClassificationTask:
             
         except FileNotFoundError:
             logger.error(f"File {corpus_path} not found.")
-
+    def balance_classes(self):
+        """
+        Performs random down-sampling to match the size of the smaller class.
+        """
+        logger.info("--- Balancing Binary Classes ---")
+        
+        data = list(zip(self.records, self.labels))
+        
+        class0 = [d for d in data if d[1] == 0]
+        class1 = [d for d in data if d[1] == 1]
+        
+        len0 = len(class0)
+        len1 = len(class1)
+        
+        logger.info(f"Counts before balancing: Class 0={len0}, Class 1={len1}") # 
+        
+        min_len = min(len0, len1)
+        
+        class0_down = random.sample(class0, min_len)
+        class1_down = random.sample(class1, min_len)
+        
+        balanced_data = class0_down + class1_down
+        random.shuffle(balanced_data)
+        
+        self.records, self.labels = zip(*balanced_data)
+        
+        self.records = list(self.records)
+        self.labels = list(self.labels)
+        
+        logger.info(f"Counts after balancing: Class 0={self.labels.count(0)}, Class 1={self.labels.count(1)}") #
 
 class MultiClassClassificationTask:
     """Handles loading data for multi-class classification: Speaker1, Speaker2, and Other."""
@@ -199,30 +233,76 @@ class MultiClassClassificationTask:
             logger.error(f"File {corpus_path} not found.")
 
 
+    def balance_classes(self):
+        """
+        Balances 3 classes: Speaker 1, Speaker 2, and Other.
+        """
+        logger.info("--- Balancing Multi-Class Classes ---")
+        
+        data = list(zip(self.records, self.labels))
+        
+        class0 = [d for d in data if d[1] == 0]
+        class1 = [d for d in data if d[1] == 1]
+        class2 = [d for d in data if d[1] == 2] 
+        
+        lengths = [len(class0), len(class1), len(class2)]
+        logger.info(f"Counts before: Class 0={lengths[0]}, Class 1={lengths[1]}, Class 2={lengths[2]}") # 
+        
+        min_len = min(lengths)
+        logger.info(f"Down-sampling to {min_len} per class.")
+        
+        c0_down = random.sample(class0, min_len)
+        c1_down = random.sample(class1, min_len)
+        c2_down = random.sample(class2, min_len)
+        
+        balanced_data = c0_down + c1_down + c2_down
+        random.shuffle(balanced_data)
+        
+        self.records, self.labels = zip(*balanced_data)
+        self.records = list(self.records)
+        self.labels = list(self.labels)
+        
+        logger.info(f"Counts after: 0={self.labels.count(0)}, 1={self.labels.count(1)}, 2={self.labels.count(2)}") 
+
+
+
+class TaskHandler:
+    """Main handler to run the classification tasks."""
+    def __init__(self, corpus_file: str):
+        self.corpus_file = corpus_file
+        self.top_speakers = None
+        self.binray_task = None
+        self.multi_task = None
+
+    def run(self):
+        """Executes the task pipeline."""
+        top_speakers = TopTwoSpeakers(self.corpus_file)
+    
+        if top_speakers.speaker1 and top_speakers.speaker2:
+    
+            ln1 = top_speakers.speaker1.split()[-1]
+            ln2 = top_speakers.speaker2.split()[-1]
+            
+            aliases1, aliases2 = get_variations(self.corpus_file, ln1, ln2)
+            
+
+            self.binray_task = BinaryClassificationTask(aliases1, aliases2)
+            self.binray_task.load_data(self.corpus_file)
+            self.binray_task.balance_classes()
+            
+            self.multi_task = MultiClassClassificationTask(aliases1, aliases2)
+            self.multi_task.load_data(self.corpus_file)
+            self.multi_task.balance_classes()
+
+
 if __name__ == "__main__":
+  
+    random.seed(42)
+    np.random.seed(42)
+    
     corpus_file = 'knesset_corpus.jsonl' 
+
+    handler = TaskHandler(corpus_file)
+    handler.run()
+
     
-    top_speakers = TopTwoSpeakers(corpus_file)
-    
-    if top_speakers.speaker1 and top_speakers.speaker2:
-        logger.info("--- Selected Classes ---")
-        logger.info(f"Class 1: {top_speakers.speaker1}")
-        logger.info(f"Class 2: {top_speakers.speaker2}")
-
-
-        last_name_1 = top_speakers.speaker1.split()[-1]
-        last_name_2 = top_speakers.speaker2.split()[-1]
-
-        speaker1_aliases, speaker2_aliases = get_variations(
-            corpus_file, 
-            last_name_1=last_name_1, 
-            last_name_2=last_name_2
-        )
-        
-
-        binary_task = BinaryClassificationTask(speaker1_aliases, speaker2_aliases)
-        binary_task.load_data(corpus_file)
-        
-
-        multi_task = MultiClassClassificationTask(speaker1_aliases, speaker2_aliases)
-        multi_task.load_data(corpus_file)
