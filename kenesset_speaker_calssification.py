@@ -5,6 +5,13 @@ import numpy as np
 from collections import Counter
 from typing import Tuple, Set
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_val_predict
+from sklearn.metrics import classification_report
+from sklearn.preprocessing import StandardScaler
+from scipy.sparse import hstack
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -17,45 +24,223 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def extract_custom_features_from_record(record: dict) -> list:
-    """
-    Helper function to extract stylistic and metadata features from a single record.
-    Returns a list of numerical features.
-    """
-    text = record.get('sentence_text', '')
-    
-    word_count = len(text.split())
-    
-    char_count = len(text.replace(" ", ""))
-    avg_word_len = char_count / word_count if word_count > 0 else 0
-    
-    num_commas = text.count(',')
-    num_questions = text.count('?')
-    num_exclamations = text.count('!')
-    num_quotes = text.count('"')
-    
-    is_plenary = 1 if record.get('protocol_type') == 'plenary' else 0
-    
-    try:
-        knesset_num = int(record.get('knesset_number', 0))
-    except (ValueError, TypeError):
-        knesset_num = 0
-        
-    speaker = record.get('speaker_name', '').strip()
-    chairman = record.get('protocol_chairman', '').strip()
-    is_chairman_speaking = 1 if (speaker and chairman and speaker == chairman) else 0
+
+
+def lexical_features(tokens):
+    """"Extracts lexical diversity features from tokens."""
+    if not tokens:
+        return [0, 0, 0]
+
+    unique = len(set(tokens))
+    total = len(tokens)
+
+    hapax = sum(1 for t in set(tokens) if tokens.count(t) == 1)
 
     return [
-        word_count, 
-        avg_word_len, 
-        num_commas, 
-        num_questions, 
-        num_exclamations, 
-        num_quotes,
-        is_plenary, 
-        knesset_num,
-        is_chairman_speaking
+        unique / total,         
+        hapax / total,           
+        unique                  
     ]
+
+
+
+HEB_FUNCTION_WORDS = {
+    "של", "על", "עם", "אל", "אם", "כי", "גם", "לא",
+    "כן", "זה", "הוא", "היא", "אנחנו", "אני", "אתם"
+}
+
+def function_word_features(tokens):
+    """Extracts function word features from tokens."""
+    if not tokens:
+        return [0, 0]
+
+    fw_count = sum(1 for t in tokens if t in HEB_FUNCTION_WORDS)
+
+    return [
+        fw_count / len(tokens),
+        fw_count
+    ]
+
+
+
+DISCOURSE_MARKERS = {
+    "על כן", "לכן", "ברשותכם", "אדוני היושב ראש",
+    "אני מבקש", "אני רוצה", "נדמה לי", "כמובן"
+}
+
+def discourse_features(text):
+    """Extracts discourse marker features from text."""
+    return [
+        int(marker in text) for marker in DISCOURSE_MARKERS
+    ]
+
+
+
+
+def structural_features(text):
+    """Extracts structural features from text."""
+    words = text.split()
+
+    return [
+        text.count(','),                
+        text.count('–'),                
+        text.count('(') + text.count(')'),
+        sum(len(w) > 6 for w in words),   
+        max(len(w) for w in words) if words else 0
+    ]
+
+
+
+EMPHASIS_WORDS = {"מאוד", "באמת", "בהחלט", "חייבים"}
+
+def emphasis_features(text):
+    """Extracts emphasis features from text."""
+    return [
+        int('!' in text),
+        sum(text.count(w) for w in EMPHASIS_WORDS)
+    ]
+
+
+
+def numeric_features(text):
+    """Extracts numeric features from text."""
+    digits = sum(c.isdigit() for c in text)
+
+    return [
+        digits,
+        digits / max(len(text), 1),
+        int("אלף" in text or "מיליון" in text)
+    ]
+
+
+
+def role_features(record):
+    """Extracts role-based features from the record."""
+    speaker = record.get("speaker_name", "")
+    chair = record.get("protocol_chairman", "")
+
+    return [
+        int(speaker == chair),
+        int("ראש" in speaker),
+        int("שר" in speaker),
+        int("חבר הכנסת" in speaker)
+    ]
+
+
+
+
+def extract_custom_features_from_record(record: dict) -> list:
+    """Extracts custom features from a record."""
+    text = record.get("sentence_text", "")
+    tokens = text.split()
+
+    features = []
+
+    features += lexical_features(tokens)
+    features += function_word_features(tokens)
+    features += discourse_features(text)
+    features += structural_features(text)
+    features += emphasis_features(text)
+    features += numeric_features(text)
+    features += role_features(record)
+
+    features += [
+        len(tokens),                           
+        len(text),                              
+        len(set(tokens)) / max(len(tokens), 1), 
+        int('?' in text)                       
+    ]
+
+    return features
+
+
+def train_and_evaluate(X, y, task_name, feature_name):
+    logger.info(f"\n===== {task_name} | {feature_name} =====")
+
+    knn = KNeighborsClassifier(n_neighbors=5)
+
+    y_pred_knn = cross_val_predict(
+        knn, X, y, cv=5, n_jobs=-1
+    )
+
+    logger.info("\n--- KNN ---")
+    logger.info(classification_report(y, y_pred_knn, digits=3))
+
+
+    lr = LogisticRegression(
+        max_iter=1000,
+        solver="lbfgs",
+    )
+
+
+    y_pred_lr = cross_val_predict(
+        lr, X, y, cv=5, n_jobs=-1
+    )
+
+    logger.info("\n--- Logistic Regression ---")
+    logger.info(classification_report(y, y_pred_lr, digits=3))
+
+
+
+def scale_custom_features(X_custom):
+    scaler = StandardScaler()
+    return scaler.fit_transform(X_custom)
+
+
+def combine_features(X_text, X_custom):
+    return hstack([X_text, X_custom])
+
+
+
+
+def run_all_experiments(task, task_name):
+    y = np.array(task.labels)
+
+    train_and_evaluate(
+        task.X_bow,
+        y,
+        task_name,
+        "BOW"
+    )
+
+    train_and_evaluate(
+        task.X_tfidf,
+        y,
+        task_name,
+        "TF-IDF"
+    )
+
+    X_custom_scaled = scale_custom_features(task.X_custom)
+    train_and_evaluate(
+        X_custom_scaled,
+        y,
+        task_name,
+        "Custom Features"
+    )
+
+    X_bow_custom = combine_features(
+        task.X_bow,
+        X_custom_scaled
+    )
+    train_and_evaluate(
+        X_bow_custom,
+        y,
+        task_name,
+        "BOW + Custom"
+    )
+
+    X_tfidf_custom = combine_features(
+        task.X_tfidf,
+        X_custom_scaled
+    )
+    train_and_evaluate(
+        X_tfidf_custom,
+        y,
+        task_name,
+        "TF-IDF + Custom"
+    )
+
+
 
 class TopTwoSpeakers:
     """Finds the two most common speakers in the corpus."""
@@ -307,6 +492,25 @@ class TaskHandler:
             self.multi_task.load_data(self.corpus_file)
             self.multi_task.balance_classes()
             self.multi_task.create_features()
+
+            logger.info("\n==============================")
+            logger.info(" RUNNING BINARY CLASSIFICATION ")
+            logger.info("==============================")
+
+            run_all_experiments(
+                self.binray_task,
+                task_name="Binary Classification"
+            )
+
+            logger.info("\n==============================")
+            logger.info(" RUNNING MULTI-CLASS CLASSIFICATION ")
+            logger.info("==============================")
+
+            run_all_experiments(
+                self.multi_task,
+                task_name="Multi-Class Classification"
+            )
+
 
 if __name__ == "__main__":
     random.seed(42)
