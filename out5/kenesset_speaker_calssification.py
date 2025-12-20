@@ -20,8 +20,8 @@ random.seed(42)
 np.random.seed(42)
     
 
-# MINDEF=[1, 2, 3, 4, 5]
-# MAXDEF=[0.7, 0.8, 0.85, 0.9, 0.95]
+MINDEF=[1, 2, 3, 4, 5, 6]
+MAXDEF=[0.7, 0.8, 0.85, 0.9, 0.95, 1]
 UNIGRAMS = (1,1)
 BIGRAMS = (1,2)
 TRIGRAMS = (1,3)
@@ -352,7 +352,11 @@ def get_variations(corpus_path: str, last_name_1: str, last_name_2: str) -> Tupl
 
 class BinaryClassificationTask:
     """Handles loading, balancing, and feature extraction for binary classification."""
-
+    MINDEF=[1, 2, 3, 4, 5]
+    MAXDEF=[0.7, 0.8, 0.9, 0.95]
+    UNIGRAMS = (1,1)
+    BIGRAMS = (1,2)
+    TRIGRAMS = (1,3)
 
     def __init__(self, speaker1: set, speaker2: set):
         self.speaker1_aliases = speaker1
@@ -422,17 +426,14 @@ class BinaryClassificationTask:
     def create_features(self):
 
         logger.info("--- Creating Feature Vectors (Binary) ---")
-        MAX_FEATURES = 2000
-        MINDEF = 10
-        MAXDEF = 0.9
-        NGRAMS =TRIGRAMS
-        logger.info(f"Testing MINDEF: {MINDEF}, MAXDEF: {MAXDEF}, Ngram: {NGRAMS}, Max Features: {MAX_FEATURES}")
+        INDEX = 4
+        logger.info(f"Testing MINDEF: {MINDEF[INDEX]}, MAXDEF: {MAXDEF[INDEX]}, Ngram: {self.UNIGRAMS}")
         text_data = [r['sentence_text'] for r in self.records]
-        self.vectorizer_bow = CountVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
+        self.vectorizer_bow = CountVectorizer(min_df=MINDEF[INDEX], max_df=MAXDEF[INDEX], ngram_range=UNIGRAMS)
         self.X_bow = self.vectorizer_bow.fit_transform(text_data)
         logger.info(f"BOW Vector shape: {self.X_bow.shape}")
 
-        self.vectorizer_tfidf = TfidfVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
+        self.vectorizer_tfidf = TfidfVectorizer(min_df=MINDEF[INDEX], max_df=MAXDEF[INDEX], ngram_range=UNIGRAMS)
         self.X_tfidf = self.vectorizer_tfidf.fit_transform(text_data)
         logger.info(f"TF-IDF Vector shape: {self.X_tfidf.shape}")
         
@@ -514,18 +515,14 @@ class MultiClassClassificationTask:
     def create_features(self):
         logger.info("--- Creating Feature Vectors (Multi-Class) ---")
         
-
-        NGRAMS = TRIGRAMS
-        MAX_FEATURES = 2000
-        MINDEF = 10
-        MAXDEF = 0.9
+        INDEX = 4
         text_data = [r['sentence_text'] for r in self.records]
-        logger.info(f"Testing MINDEF: {MINDEF}, MAXDEF: {MAXDEF}, Ngram: {NGRAMS}, Max Features: {MAX_FEATURES}")
-        self.vectorizer_bow = CountVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
+        logger.info(f"Testing MINDEF: {MINDEF[INDEX]}, MAXDEF: {MAXDEF[INDEX]}, Ngram: {UNIGRAMS}")
+        self.vectorizer_bow = CountVectorizer(min_df=MINDEF[INDEX], max_df=MAXDEF[INDEX], ngram_range=UNIGRAMS)
         self.X_bow = self.vectorizer_bow.fit_transform(text_data)
         logger.info(f"BOW Vector shape: {self.X_bow.shape}")
 
-        self.vectorizer_tfidf = TfidfVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
+        self.vectorizer_tfidf = TfidfVectorizer(min_df=MINDEF[INDEX], max_df=MAXDEF[INDEX], ngram_range=UNIGRAMS)
         self.X_tfidf = self.vectorizer_tfidf.fit_transform(text_data)
         logger.info(f"TF-IDF Vector shape: {self.X_tfidf.shape}")
         
@@ -555,82 +552,23 @@ class MultiClassClassificationTask:
 
 
     def predict_all_and_save(self, models_dict, input_file_path, output_dir):
-        """
-        Runs inference using ALL trained models and feature strategies.
-        Saves one file per model and a single classification_results.txt with majority voting.
-        """
-        logger.info(f"Inference started on: {input_file_path}")
+            """Runs the test data through selected text-only models."""
+            logger.info(f"Inference started on: {input_file_path}")
+            with open(input_file_path, 'r', encoding='utf-8') as f:
+                sentences = [line.strip() for line in f if line.strip()]
 
-        with open(input_file_path, 'r', encoding='utf-8') as f:
-            sentences = [line.strip() for line in f if line.strip()]
+            X_test_tfidf = self.vectorizer_tfidf.transform(sentences)
+            
 
-        os.makedirs(output_dir, exist_ok=True)
-        label_map = {0: 'first', 1: 'second', 2: 'other'}
-
-        all_model_preds = []  # 
-
-        for feature_name, models in models_dict.items():
-            logger.info(f"--- Using features: {feature_name} ---")
-
-
-            if feature_name == "BOW":
-                X_test = self.vectorizer_bow.transform(sentences)
-            elif feature_name == "TF-IDF":
-                X_test = self.vectorizer_tfidf.transform(sentences)
-            elif feature_name == "Custom":
-                X_custom = scale_custom_features(np.array([
-                    extract_custom_features_from_record({"sentence_text": s})
-                    for s in sentences
-                ]))
-                X_test = X_custom
-            elif feature_name == "BOW_Custom":
-                X_bow = self.vectorizer_bow.transform(sentences)
-                X_custom = scale_custom_features(np.array([
-                    extract_custom_features_from_record({"sentence_text": s})
-                    for s in sentences
-                ]))
-                X_test = hstack([X_bow, X_custom])
-            elif feature_name == "TFIDF_Custom":
-                X_tfidf = self.vectorizer_tfidf.transform(sentences)
-                X_custom = scale_custom_features(np.array([
-                    extract_custom_features_from_record({"sentence_text": s})
-                    for s in sentences
-                ]))
-                X_test = hstack([X_tfidf, X_custom])
-            else:
-                logger.warning(f"Unknown feature type: {feature_name}")
-                continue
-
-
-            for model_name, model in models.items():
-                logger.info(f"Predicting with {feature_name} + {model_name}")
-                preds = model.predict(X_test)
-                all_model_preds.append(preds)  
-
-                out_file = f"{feature_name}_{model_name}_predictions.txt"
-                out_path = os.path.join(output_dir, out_file)
-                with open(out_path, 'w', encoding='utf-8') as f:
-                    for p in preds:
-                        f.write(f"{label_map[p]}\n")
-                logger.info(f"Saved predictions to {out_path}")
-
-
-        logger.info("Computing majority vote for classification_results.txt")
-        all_model_preds_array = np.array(all_model_preds)  
-        majority_preds = []
-
-        for i in range(len(sentences)):
-            votes = all_model_preds_array[:, i]
-            most_common_label = Counter(votes).most_common(1)[0][0]
-            majority_preds.append(most_common_label)
-
-        majority_file = os.path.join(output_dir, 'classification_results.txt')
-        with open(majority_file, 'w', encoding='utf-8') as f:
-            for p in majority_preds:
-                f.write(f"{label_map[p]}\n")
-
-        logger.info(f"Saved majority vote predictions to {majority_file}")
-
+            final_model = models_dict["TF-IDF"]["lr"]
+            predictions = final_model.predict(X_test_tfidf)
+            
+            label_map = {0: 'first', 1: 'second', 2: 'other'}
+            os.makedirs(output_dir, exist_ok=True)
+            with open(os.path.join(output_dir, 'classification_results.txt'), 'w', encoding='utf-8') as f:
+                for p in predictions:
+                    f.write(f"{label_map[p]}\n")
+            logger.info("Stage 5 Results saved.")
 
 
 class TaskHandler:

@@ -1,0 +1,245 @@
+22:18:40 - INFO - --- Top 20 Speakers ---
+22:18:40 - INFO - 1. ראובן ריבלין: 3201
+22:18:40 - INFO - 2. א' בורג: 2337
+22:18:40 - INFO - 3. משה גפני: 1700
+22:18:40 - INFO - 4. ניסן סלומינסקי: 1413
+22:18:40 - INFO - 5. אברהם פורז: 1134
+22:18:40 - INFO - 6. מיכאל איתן: 1023
+22:18:40 - INFO - 7. עבד-אלמאלכ דהאמשה: 995
+22:18:40 - INFO - 8. אבשלום וילן: 945
+22:18:40 - INFO - 9. טלב אלסאנע: 942
+22:18:40 - INFO - 10. ד' טל: 923
+22:18:40 - INFO - 11. עזמי בשארה: 921
+22:18:40 - INFO - 12. זבולון אורלב: 920
+22:18:40 - INFO - 13. תמר גוז'נסקי: 891
+22:18:40 - INFO - 14. נסים זאב: 886
+22:18:40 - INFO - 15. יוסף ג'בארין: 827
+22:18:40 - INFO - 16. אחמד טיבי: 824
+22:18:40 - INFO - 17. מאיר שטרית: 795
+22:18:40 - INFO - 18. ש' וייס: 785
+22:18:40 - INFO - 19. רוני בר-און: 784
+22:18:40 - INFO - 20. שאול יהלום: 777
+22:18:40 - INFO - Searching for variations of 'ריבלין' and 'בורג'
+22:18:41 - INFO - Found 3 variations for ריבלין: {'ראובן ריבלין', "ר' ריבלין", 'רובי ריבלין'}
+22:18:41 - INFO - Found 2 variations for בורג: {"א' בורג", 'אברהם בורג'}
+22:18:42 - INFO - --- Binary Data Loaded ---
+22:18:42 - INFO - Class 1 (Label 0): 3509
+22:18:42 - INFO - Class 2 (Label 1): 2487
+22:18:42 - INFO - Total: 5996
+22:18:42 - INFO - --- Balancing Binary Classes ---
+22:18:42 - INFO - Counts before: Class 0=3509, Class 1=2487
+22:18:42 - INFO - Counts after: Class 0=2487, Class 1=2487
+22:18:42 - INFO - --- Creating Feature Vectors (Binary) ---
+22:18:42 - INFO - Testing MINDEF: 1, MAXDEF: 0.7, Ngram: (1, 1)
+22:18:42 - INFO - BOW Vector shape: (4974, 7957)
+22:18:42 - INFO - TF-IDF Vector shape: (4974, 7957)
+22:18:42 - INFO - Custom Vector shape: (4974, 31)
+22:18:42 - INFO - Loading Multi-Class Data...
+22:18:43 - INFO - --- Multi-Class Data Loaded ---
+22:18:43 - INFO - Class 0: 3509, Class 1: 2487, Class 2: 102137
+22:18:43 - INFO - Total: 108133
+22:18:43 - INFO - --- Balancing Multi-Class Classes ---
+22:18:43 - INFO - Counts before: 0=3509, 1=2487, 2=102137
+22:18:43 - INFO - Down-sampling to 2487 per class.
+22:18:43 - INFO - Counts after: 0=2487, 1=2487, 2=2487
+22:18:43 - INFO - --- Creating Feature Vectors (Multi-Class) ---
+22:18:43 - INFO - Testing MINDEF: 1, MAXDEF: 0.7, Ngram: (1, 1)
+22:18:43 - INFO - BOW Vector shape: (7461, 14010)
+22:18:43 - INFO - TF-IDF Vector shape: (7461, 14010)
+22:18:44 - INFO - Custom Vector shape: (7461, 31)
+22:18:44 - INFO - 
+==============================
+22:18:44 - INFO -  RUNNING BINARY CLASSIFICATION 
+22:18:44 - INFO - ==============================
+22:18:44 - INFO - 
+===== Binary Classification | BOW =====
+22:18:44 - INFO - k=1: f1=0.7989
+22:18:45 - INFO - k=3: f1=0.7947
+22:18:45 - INFO - k=5: f1=0.7917
+22:18:46 - INFO - k=7: f1=0.7985
+22:18:46 - INFO - k=9: f1=0.7976
+22:18:46 - INFO - k=11: f1=0.7912
+22:18:47 - INFO - k=15: f1=0.7887
+22:18:47 - INFO - k=21: f1=0.7776
+22:18:47 - INFO - Best k = 1 (score=0.7989)
+22:18:48 - INFO - 
+--- KNN ---
+22:18:48 - INFO -               precision    recall  f1-score   support
+
+           0      0.813     0.777     0.794      2487
+           1      0.786     0.821     0.803      2487
+
+    accuracy                          0.799      4974
+   macro avg      0.800     0.799     0.799      4974
+weighted avg      0.800     0.799     0.799      4974
+
+22:18:49 - INFO - 
+--- Logistic Regression ---
+22:18:49 - INFO -               precision    recall  f1-score   support
+
+           0      0.851     0.905     0.877      2487
+           1      0.898     0.842     0.869      2487
+
+    accuracy                          0.873      4974
+   macro avg      0.875     0.873     0.873      4974
+weighted avg      0.875     0.873     0.873      4974
+
+22:18:49 - INFO - 
+===== Binary Classification | TF-IDF =====
+22:18:49 - INFO - k=1: f1=0.8313
+22:18:50 - INFO - k=3: f1=0.8366
+22:18:50 - INFO - k=5: f1=0.8294
+22:18:50 - INFO - k=7: f1=0.8295
+22:18:51 - INFO - k=9: f1=0.8337
+22:18:51 - INFO - k=11: f1=0.8327
+22:18:52 - INFO - k=15: f1=0.8257
+22:18:52 - INFO - k=21: f1=0.8162
+22:18:52 - INFO - Best k = 3 (score=0.8366)
+22:18:52 - INFO - 
+--- KNN ---
+22:18:52 - INFO -               precision    recall  f1-score   support
+
+           0      0.855     0.811     0.832      2487
+           1      0.820     0.863     0.841      2487
+
+    accuracy                          0.837      4974
+   macro avg      0.838     0.837     0.837      4974
+weighted avg      0.838     0.837     0.837      4974
+
+22:18:52 - INFO - 
+--- Logistic Regression ---
+22:18:52 - INFO -               precision    recall  f1-score   support
+
+           0      0.819     0.944     0.877      2487
+           1      0.934     0.791     0.857      2487
+
+    accuracy                          0.868      4974
+   macro avg      0.877     0.868     0.867      4974
+weighted avg      0.877     0.868     0.867      4974
+
+22:18:53 - INFO - 
+===== Binary Classification | Custom Features =====
+22:18:53 - INFO - k=1: f1=0.7770
+22:18:53 - INFO - k=3: f1=0.8045
+22:18:53 - INFO - k=5: f1=0.8083
+22:18:53 - INFO - k=7: f1=0.8077
+22:18:53 - INFO - k=9: f1=0.8117
+22:18:53 - INFO - k=11: f1=0.8143
+22:18:53 - INFO - k=15: f1=0.8125
+22:18:54 - INFO - k=21: f1=0.8156
+22:18:54 - INFO - Best k = 21 (score=0.8156)
+22:18:54 - INFO - 
+--- KNN ---
+22:18:54 - INFO -               precision    recall  f1-score   support
+
+           0      0.803     0.836     0.819      2487
+           1      0.829     0.795     0.812      2487
+
+    accuracy                          0.816      4974
+   macro avg      0.816     0.816     0.816      4974
+weighted avg      0.816     0.816     0.816      4974
+
+22:18:54 - INFO - 
+--- Logistic Regression ---
+22:18:54 - INFO -               precision    recall  f1-score   support
+
+           0      0.835     0.774     0.803      2487
+           1      0.789     0.847     0.817      2487
+
+    accuracy                          0.810      4974
+   macro avg      0.812     0.810     0.810      4974
+weighted avg      0.812     0.810     0.810      4974
+
+22:18:54 - INFO - 
+===== Binary Classification | BOW + Custom =====
+22:18:55 - INFO - k=1: f1=0.8089
+22:18:57 - INFO - k=3: f1=0.8100
+22:18:58 - INFO - k=5: f1=0.8168
+22:18:59 - INFO - k=7: f1=0.8166
+22:19:00 - INFO - k=9: f1=0.8145
+22:19:01 - INFO - k=11: f1=0.8135
+22:19:02 - INFO - k=15: f1=0.8093
+22:19:04 - INFO - k=21: f1=0.8084
+22:19:04 - INFO - Best k = 5 (score=0.8168)
+22:19:05 - INFO - 
+--- KNN ---
+22:19:05 - INFO -               precision    recall  f1-score   support
+
+           0      0.853     0.767     0.808      2487
+           1      0.788     0.867     0.826      2487
+
+    accuracy                          0.817      4974
+   macro avg      0.820     0.817     0.817      4974
+weighted avg      0.820     0.817     0.817      4974
+
+22:19:08 - INFO - 
+--- Logistic Regression ---
+22:19:08 - INFO -               precision    recall  f1-score   support
+
+           0      0.871     0.904     0.888      2487
+           1      0.901     0.867     0.883      2487
+
+    accuracy                          0.885      4974
+   macro avg      0.886     0.885     0.885      4974
+weighted avg      0.886     0.885     0.885      4974
+
+22:19:08 - INFO - 
+===== Binary Classification | TF-IDF + Custom =====
+22:19:09 - INFO - k=1: f1=0.8134
+22:19:10 - INFO - k=3: f1=0.8248
+22:19:11 - INFO - k=5: f1=0.8248
+22:19:13 - INFO - k=7: f1=0.8264
+22:19:14 - INFO - k=9: f1=0.8224
+22:19:15 - INFO - k=11: f1=0.8234
+22:19:16 - INFO - k=15: f1=0.8161
+22:19:17 - INFO - k=21: f1=0.8178
+22:19:17 - INFO - Best k = 7 (score=0.8264)
+22:19:19 - INFO - 
+--- KNN ---
+22:19:19 - INFO -               precision    recall  f1-score   support
+
+           0      0.811     0.852     0.831      2487
+           1      0.844     0.801     0.822      2487
+
+    accuracy                          0.826      4974
+   macro avg      0.827     0.826     0.826      4974
+weighted avg      0.827     0.826     0.826      4974
+
+22:19:21 - INFO - 
+--- Logistic Regression ---
+22:19:22 - INFO -               precision    recall  f1-score   support
+
+           0      0.854     0.876     0.865      2487
+           1      0.872     0.850     0.861      2487
+
+    accuracy                          0.863      4974
+   macro avg      0.863     0.863     0.863      4974
+weighted avg      0.863     0.863     0.863      4974
+
+22:19:22 - INFO - 
+==============================
+22:19:22 - INFO -  RUNNING MULTI-CLASS CLASSIFICATION 
+22:19:22 - INFO - ==============================
+22:19:22 - INFO - 
+===== Multi-Class Classification | BOW =====
+22:19:22 - INFO - k=1: f1=0.6000
+22:19:23 - INFO - k=3: f1=0.5935
+22:19:24 - INFO - k=5: f1=0.5730
+22:19:24 - INFO - k=7: f1=0.5745
+22:19:25 - INFO - k=9: f1=0.5820
+22:19:25 - INFO - k=11: f1=0.5725
+22:19:26 - INFO - k=15: f1=0.5685
+22:19:27 - INFO - k=21: f1=0.5631
+22:19:27 - INFO - Best k = 1 (score=0.6000)
+22:19:27 - INFO - 
+--- KNN ---
+22:19:27 - INFO -               precision    recall  f1-score   support
+
+           0      0.532     0.581     0.556      2487
+           1      0.709     0.771     0.738      2487
+           2      0.562     0.460     0.506      2487
+
+    accuracy                          0.604      7461
+   macro avg      0.601     0.604     0.600      7461
+weighted avg      0.601     0.604     0.600      7461
+

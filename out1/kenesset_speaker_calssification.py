@@ -1,4 +1,3 @@
-from ast import Dict
 import json
 import logging
 import random
@@ -16,15 +15,7 @@ import sys
 import os
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import f1_score
-random.seed(42)
-np.random.seed(42)
-    
 
-# MINDEF=[1, 2, 3, 4, 5]
-# MAXDEF=[0.7, 0.8, 0.85, 0.9, 0.95]
-UNIGRAMS = (1,1)
-BIGRAMS = (1,2)
-TRIGRAMS = (1,3)
 
 # logging.basicConfig(
 #     level=logging.INFO,
@@ -34,50 +25,6 @@ TRIGRAMS = (1,3)
 #         logging.FileHandler("output.log", mode='w', encoding='utf-8')
 #     ]
 # )
-
-
-
-def tune_logistic_regression(X, y, C_values=None, max_iter_values=None, cv=5, metric="f1"):
-    """
-    Performs grid search for LogisticRegression over C and max_iter.
-    
-    Args:
-        X: Feature matrix
-        y: Labels
-        C_values: List of C values to try
-        max_iter_values: List of max_iter values to try
-        cv: Number of cross-validation folds
-        metric: Scoring metric (default "f1", uses macro average)
-    
-    Returns:
-        best_lr: LogisticRegression instance with best parameters
-        best_params: dict of best parameters
-        best_score: best F1 score
-    """
-    if C_values is None:
-        C_values = [0.01, 0.1, 1, 10]
-    if max_iter_values is None:
-        max_iter_values = [500, 1000, 2000]
-
-    best_score = 0
-    best_params = {}
-    best_lr = None
-
-    for C in C_values:
-        for max_iter in max_iter_values:
-            lr = LogisticRegression(C=C, max_iter=max_iter, solver="lbfgs")
-            y_pred = cross_val_predict(lr, X, y, cv=cv, n_jobs=1)
-            score = f1_score(y, y_pred, average="macro")
-            logger.info(f"LR: C={C}, max_iter={max_iter} -> F1={score:.4f}")
-            if score > best_score:
-                best_score = score
-                best_params = {'C': C, 'max_iter': max_iter}
-                best_lr = lr
-
-    logger.info(f"\nBest LR params: {best_params}, Best F1={best_score:.4f}")
-    
-    return best_lr, best_params, best_score
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -223,24 +170,33 @@ def extract_custom_features_from_record(record: dict) -> list:
 
 def train_and_evaluate(X, y, task_name, feature_name):
     logger.info(f"\n===== {task_name} | {feature_name} =====")
-    
-    k_vals = [1, 3, 5, 7, 9, 11, 15, 21]
-    best_k = find_best_k(X, y, k_vals)
+
+    k_values = [1, 3, 5, 7, 9, 11, 15, 21]
+
+    best_k = find_best_k(X, y, k_values)
+
     knn = KNeighborsClassifier(n_neighbors=best_k)
-    knn.fit(X, y) 
-    
-    y_pred_knn = cross_val_predict(knn, X, y, cv=5)
-    logger.info(f"--- KNN (k={best_k}) ---\n{classification_report(y, y_pred_knn, digits=3)}")
 
-    
-    lr_best, best_params, _ = tune_logistic_regression(X, y)
-    lr_best.fit(X, y)
-    
-    y_pred_lr = cross_val_predict(lr_best, X, y, cv=5)
-    logger.info(f"--- Logistic Regression {best_params} ---\n{classification_report(y, y_pred_lr, digits=3)}")
-    
-    return {"lr": lr_best, "knn": knn}
+    y_pred_knn = cross_val_predict(
+        knn, X, y, cv=5, n_jobs=1
+    )
 
+    logger.info("\n--- KNN ---")
+    logger.info(classification_report(y, y_pred_knn, digits=3))
+
+
+    lr = LogisticRegression(
+        max_iter=1000,
+        solver="lbfgs",
+    )
+
+
+    y_pred_lr = cross_val_predict(
+        lr, X, y, cv=5, n_jobs=1
+    )
+
+    logger.info("\n--- Logistic Regression ---")
+    logger.info(classification_report(y, y_pred_lr, digits=3))
 
 
 
@@ -273,25 +229,54 @@ def find_best_k(X, y, k_values, metric="f1"):
     return best_k
 
 
-def run_all_experiments(task, task_name) -> Dict:
-    """Runs all feature combinations and returns a dictionary of all fitted models."""
-    models_registry = {}
+def run_all_experiments(task, task_name):
     y = np.array(task.labels)
 
-    models_registry["BOW"] = train_and_evaluate(task.X_bow, y, task_name, "BOW")
-    models_registry["TF-IDF"] = train_and_evaluate(task.X_tfidf, y, task_name, "TF-IDF")
-    
-  
+    train_and_evaluate(
+        task.X_bow,
+        y,
+        task_name,
+        "BOW"
+    )
+
+    train_and_evaluate(
+        task.X_tfidf,
+        y,
+        task_name,
+        "TF-IDF"
+    )
+
     X_custom_scaled = scale_custom_features(task.X_custom)
-    models_registry["Custom"] = train_and_evaluate(X_custom_scaled, y, task_name, "Custom")
+    train_and_evaluate(
+        X_custom_scaled,
+        y,
+        task_name,
+        "Custom Features"
+    )
+
+    X_bow_custom = combine_features(
+        task.X_bow,
+        X_custom_scaled
+    )
     
-    X_bow_custom = combine_features(task.X_bow, X_custom_scaled)
-    models_registry["BOW_Custom"] = train_and_evaluate(X_bow_custom, y, task_name, "BOW + Custom")
+    train_and_evaluate(
+        X_bow_custom,
+        y,
+        task_name,
+        "BOW + Custom"
+    )
 
-    X_tfidf_custom = combine_features(task.X_tfidf, X_custom_scaled)
-    models_registry["TFIDF_Custom"] = train_and_evaluate(X_tfidf_custom, y, task_name, "TF-IDF + Custom")
+    X_tfidf_custom = combine_features(
+        task.X_tfidf,
+        X_custom_scaled
+    )
+    train_and_evaluate(
+        X_tfidf_custom,
+        y,
+        task_name,
+        "TF-IDF + Custom"
+    )
 
-    return models_registry
 
 
 class TopTwoSpeakers:
@@ -352,8 +337,6 @@ def get_variations(corpus_path: str, last_name_1: str, last_name_2: str) -> Tupl
 
 class BinaryClassificationTask:
     """Handles loading, balancing, and feature extraction for binary classification."""
-
-
     def __init__(self, speaker1: set, speaker2: set):
         self.speaker1_aliases = speaker1
         self.speaker2_aliases = speaker2
@@ -416,23 +399,16 @@ class BinaryClassificationTask:
         
         logger.info(f"Counts after: Class 0={self.labels.count(0)}, Class 1={self.labels.count(1)}")
 
-    
-
-
     def create_features(self):
-
         logger.info("--- Creating Feature Vectors (Binary) ---")
-        MAX_FEATURES = 2000
-        MINDEF = 10
-        MAXDEF = 0.9
-        NGRAMS =TRIGRAMS
-        logger.info(f"Testing MINDEF: {MINDEF}, MAXDEF: {MAXDEF}, Ngram: {NGRAMS}, Max Features: {MAX_FEATURES}")
+        
         text_data = [r['sentence_text'] for r in self.records]
-        self.vectorizer_bow = CountVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
+        
+        self.vectorizer_bow = CountVectorizer(min_df=5)
         self.X_bow = self.vectorizer_bow.fit_transform(text_data)
         logger.info(f"BOW Vector shape: {self.X_bow.shape}")
 
-        self.vectorizer_tfidf = TfidfVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
+        self.vectorizer_tfidf = TfidfVectorizer(min_df=5)
         self.X_tfidf = self.vectorizer_tfidf.fit_transform(text_data)
         logger.info(f"TF-IDF Vector shape: {self.X_tfidf.shape}")
         
@@ -514,18 +490,13 @@ class MultiClassClassificationTask:
     def create_features(self):
         logger.info("--- Creating Feature Vectors (Multi-Class) ---")
         
-
-        NGRAMS = TRIGRAMS
-        MAX_FEATURES = 2000
-        MINDEF = 10
-        MAXDEF = 0.9
         text_data = [r['sentence_text'] for r in self.records]
-        logger.info(f"Testing MINDEF: {MINDEF}, MAXDEF: {MAXDEF}, Ngram: {NGRAMS}, Max Features: {MAX_FEATURES}")
-        self.vectorizer_bow = CountVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
+        
+        self.vectorizer_bow = CountVectorizer(min_df=5)
         self.X_bow = self.vectorizer_bow.fit_transform(text_data)
         logger.info(f"BOW Vector shape: {self.X_bow.shape}")
 
-        self.vectorizer_tfidf = TfidfVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
+        self.vectorizer_tfidf = TfidfVectorizer(min_df=5)
         self.X_tfidf = self.vectorizer_tfidf.fit_transform(text_data)
         logger.info(f"TF-IDF Vector shape: {self.X_tfidf.shape}")
         
@@ -554,90 +525,55 @@ class MultiClassClassificationTask:
         logger.info("Final model trained successfully.")
 
 
-    def predict_all_and_save(self, models_dict, input_file_path, output_dir):
+    def predict_and_save(self, input_file_path, output_dir):
         """
-        Runs inference using ALL trained models and feature strategies.
-        Saves one file per model and a single classification_results.txt with majority voting.
+        Reads sentences from input_file_path, predicts labels using the final model,
+        and writes results to classification_results.txt in output_dir.
         """
-        logger.info(f"Inference started on: {input_file_path}")
+        logger.info(f"Reading sentences from: {input_file_path}")
+        
+        try:
+            with open(input_file_path, 'r', encoding='utf-8') as f:
+                sentences = [line.strip() for line in f]
+        except FileNotFoundError:
+            logger.error(f"Input file not found: {input_file_path}")
+            return
 
-        with open(input_file_path, 'r', encoding='utf-8') as f:
-            sentences = [line.strip() for line in f if line.strip()]
+        if not sentences:
+            logger.warning("Input file is empty.")
+            return
 
-        os.makedirs(output_dir, exist_ok=True)
+        X_new = self.final_vectorizer.transform(sentences)
+        
+        predictions = self.final_model.predict(X_new)
+        
         label_map = {0: 'first', 1: 'second', 2: 'other'}
-
-        all_model_preds = []  # 
-
-        for feature_name, models in models_dict.items():
-            logger.info(f"--- Using features: {feature_name} ---")
-
-
-            if feature_name == "BOW":
-                X_test = self.vectorizer_bow.transform(sentences)
-            elif feature_name == "TF-IDF":
-                X_test = self.vectorizer_tfidf.transform(sentences)
-            elif feature_name == "Custom":
-                X_custom = scale_custom_features(np.array([
-                    extract_custom_features_from_record({"sentence_text": s})
-                    for s in sentences
-                ]))
-                X_test = X_custom
-            elif feature_name == "BOW_Custom":
-                X_bow = self.vectorizer_bow.transform(sentences)
-                X_custom = scale_custom_features(np.array([
-                    extract_custom_features_from_record({"sentence_text": s})
-                    for s in sentences
-                ]))
-                X_test = hstack([X_bow, X_custom])
-            elif feature_name == "TFIDF_Custom":
-                X_tfidf = self.vectorizer_tfidf.transform(sentences)
-                X_custom = scale_custom_features(np.array([
-                    extract_custom_features_from_record({"sentence_text": s})
-                    for s in sentences
-                ]))
-                X_test = hstack([X_tfidf, X_custom])
-            else:
-                logger.warning(f"Unknown feature type: {feature_name}")
-                continue
-
-
-            for model_name, model in models.items():
-                logger.info(f"Predicting with {feature_name} + {model_name}")
-                preds = model.predict(X_test)
-                all_model_preds.append(preds)  
-
-                out_file = f"{feature_name}_{model_name}_predictions.txt"
-                out_path = os.path.join(output_dir, out_file)
-                with open(out_path, 'w', encoding='utf-8') as f:
-                    for p in preds:
-                        f.write(f"{label_map[p]}\n")
-                logger.info(f"Saved predictions to {out_path}")
-
-
-        logger.info("Computing majority vote for classification_results.txt")
-        all_model_preds_array = np.array(all_model_preds)  
-        majority_preds = []
-
-        for i in range(len(sentences)):
-            votes = all_model_preds_array[:, i]
-            most_common_label = Counter(votes).most_common(1)[0][0]
-            majority_preds.append(most_common_label)
-
-        majority_file = os.path.join(output_dir, 'classification_results.txt')
-        with open(majority_file, 'w', encoding='utf-8') as f:
-            for p in majority_preds:
-                f.write(f"{label_map[p]}\n")
-
-        logger.info(f"Saved majority vote predictions to {majority_file}")
-
+        mapped_preds = [label_map[p] for p in predictions]
+        
+        if not os.path.exists(output_dir):
+            try:
+                os.makedirs(output_dir, exist_ok=True)
+                logger.info(f"Created output directory: {output_dir}")
+            except OSError as e:
+                logger.error(f"Failed to create output directory {output_dir}: {e}")
+                return
+        
+        output_path = os.path.join(output_dir, 'classification_results.txt')
+        
+        try:
+            with open(output_path, 'w', encoding='utf-8') as f:
+                for label in mapped_preds:
+                    f.write(f"{label}\n")
+            logger.info(f"Classification results saved to: {output_path}")
+        except Exception as e:
+            logger.error(f"Failed to write output file: {e}")
 
 
 class TaskHandler:
     """Main handler to run the classification tasks."""
     def __init__(self, corpus_file: str):
         self.corpus_file = corpus_file
-        self.binary_task = None
+        self.binray_task = None
         self.multi_task = None
 
     def run(self, sentences_path=None, output_dir=None):
@@ -649,10 +585,10 @@ class TaskHandler:
             
             aliases1, aliases2 = get_variations(self.corpus_file, ln1, ln2)
             
-            self.binary_task = BinaryClassificationTask(aliases1, aliases2)
-            self.binary_task.load_data(self.corpus_file)
-            self.binary_task.balance_classes()
-            self.binary_task.create_features()
+            self.binray_task = BinaryClassificationTask(aliases1, aliases2)
+            self.binray_task.load_data(self.corpus_file)
+            self.binray_task.balance_classes()
+            self.binray_task.create_features()
             
             self.multi_task = MultiClassClassificationTask(aliases1, aliases2)
             self.multi_task.load_data(self.corpus_file)
@@ -663,22 +599,32 @@ class TaskHandler:
             logger.info(" RUNNING BINARY CLASSIFICATION ")
             logger.info("==============================")
 
-            self.binary_models = run_all_experiments(self.binary_task, "Binary Task")
-
+            run_all_experiments(
+                self.binray_task,
+                task_name="Binary Classification"
+            )
 
             logger.info("\n==============================")
             logger.info(" RUNNING MULTI-CLASS CLASSIFICATION ")
             logger.info("==============================")
 
-            all_multi_models = run_all_experiments(self.multi_task, "Multi-Class")
+            run_all_experiments(
+                self.multi_task,
+                task_name="Multi-Class Classification"
+            )
 
             if sentences_path and output_dir:
-                logger.info("\n=== STAGE 5: INFERENCE (Reusing Experiment Models) ===")
-                self.multi_task.predict_all_and_save(all_multi_models, sentences_path, output_dir)
+                logger.info("\n=== STAGE 5: INFERENCE ===")
+ 
+                self.multi_task.train_final_model()
+       
+                self.multi_task.predict_and_save(sentences_path, output_dir)
 
 
 if __name__ == "__main__":
-
+    random.seed(42)
+    np.random.seed(42)
+    
 
     if len(sys.argv) < 4:
         logger.error("Error: Missing arguments.")
