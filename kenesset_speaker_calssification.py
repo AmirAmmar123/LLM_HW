@@ -1,8 +1,4 @@
 from ast import Dict
-import json
-import logging
-import random
-import numpy as np
 from collections import Counter
 from typing import Tuple, Set
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
@@ -12,28 +8,48 @@ from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import classification_report
 from sklearn.preprocessing import StandardScaler
 from scipy.sparse import hstack
+from sklearn.metrics import f1_score
 import sys
 import os
-from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import f1_score
+import string
+import json
+import logging
+import random
+import numpy as np
 random.seed(42)
 np.random.seed(42)
-    
 
-# MINDEF=[1, 2, 3, 4, 5]
-# MAXDEF=[0.7, 0.8, 0.85, 0.9, 0.95]
+
 UNIGRAMS = (1,1)
 BIGRAMS = (1,2)
-TRIGRAMS = (1,3)
+TRIGRAMS = (1,7)
+MAX_FEATURES = 2000
+MINDEF = 3
+MAXDEF = 0.9
+NGRAMS =TRIGRAMS
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%H:%M:%S',
+    handlers=[
+        logging.FileHandler("output.log", mode='w', encoding='utf-8')
+    ]
+)
 
 # logging.basicConfig(
 #     level=logging.INFO,
 #     format='%(asctime)s - %(levelname)s - %(message)s',
 #     datefmt='%H:%M:%S',
 #     handlers=[
-#         logging.FileHandler("output.log", mode='w', encoding='utf-8')
+#         logging.FileHandler("output.log", mode='w', encoding='utf-8'),
+#         logging.StreamHandler(sys.stdout)
 #     ]
 # )
+
+logger = logging.getLogger(__name__)
+
 
 
 
@@ -79,34 +95,40 @@ def tune_logistic_regression(X, y, C_values=None, max_iter_values=None, cv=5, me
     return best_lr, best_params, best_score
 
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%H:%M:%S',
-    handlers=[
-        logging.FileHandler("output.log", mode='w', encoding='utf-8'),
-        logging.StreamHandler(sys.stdout)
+
+def char_level_features(text):
+    if not text:
+        return [0, 0, 0, 0]
+
+    total = len(text)
+    letters = sum(c.isalpha() for c in text)
+    digits = sum(c.isdigit() for c in text)
+    punct = sum(c in string.punctuation for c in text)
+    avg_word_len = np.mean([len(w) for w in text.split()]) if text.split() else 0
+
+    return [
+        letters / total,
+        digits / total,
+        punct / total,
+        avg_word_len
     ]
-)
-
-logger = logging.getLogger(__name__)
-
 
 
 def lexical_features(tokens):
-    """"Extracts lexical diversity features from tokens."""
     if not tokens:
-        return [0, 0, 0]
+        return [0, 0, 0, 0]
 
-    unique = len(set(tokens))
     total = len(tokens)
-
+    unique = len(set(tokens))
     hapax = sum(1 for t in set(tokens) if tokens.count(t) == 1)
 
+    long_words = sum(len(t) > 6 for t in tokens)
+
     return [
-        unique / total,         
-        hapax / total,           
-        unique                  
+        unique / total,          
+        hapax / total,          
+        unique,                 
+        long_words / total       
     ]
 
 
@@ -117,15 +139,14 @@ HEB_FUNCTION_WORDS = {
 }
 
 def function_word_features(tokens):
-    """Extracts function word features from tokens."""
     if not tokens:
         return [0, 0]
 
-    fw_count = sum(1 for t in tokens if t in HEB_FUNCTION_WORDS)
+    fw = [t for t in tokens if t in HEB_FUNCTION_WORDS]
 
     return [
-        fw_count / len(tokens),
-        fw_count
+        len(fw) / len(tokens),
+        len(set(fw)) / max(len(fw), 1)
     ]
 
 
@@ -135,6 +156,7 @@ DISCOURSE_MARKERS = {
     "אני מבקש", "אני רוצה", "נדמה לי", "כמובן"
 }
 
+
 def discourse_features(text):
     """Extracts discourse marker features from text."""
     return [
@@ -143,16 +165,16 @@ def discourse_features(text):
 
 
 
-
 def structural_features(text):
-    """Extracts structural features from text."""
     words = text.split()
+    wc = len(words)
+
+    commas = text.count(',')
+    parentheses = text.count('(') + text.count(')')
 
     return [
-        text.count(','),                
-        text.count('–'),                
-        text.count('(') + text.count(')'),
-        sum(len(w) > 6 for w in words),   
+        commas / max(wc, 1),
+        parentheses / max(wc, 1),
         max(len(w) for w in words) if words else 0
     ]
 
@@ -160,13 +182,12 @@ def structural_features(text):
 
 EMPHASIS_WORDS = {"מאוד", "באמת", "בהחלט", "חייבים"}
 
+
 def emphasis_features(text):
-    """Extracts emphasis features from text."""
     return [
-        int('!' in text),
+        text.count('!') / max(len(text), 1),
         sum(text.count(w) for w in EMPHASIS_WORDS)
     ]
-
 
 
 def numeric_features(text):
@@ -178,7 +199,6 @@ def numeric_features(text):
         digits / max(len(text), 1),
         int("אלף" in text or "מיליון" in text)
     ]
-
 
 
 def role_features(record):
@@ -197,7 +217,6 @@ def role_features(record):
 
 
 def extract_custom_features_from_record(record: dict) -> list:
-    """Extracts custom features from a record."""
     text = record.get("sentence_text", "")
     tokens = text.split()
 
@@ -209,16 +228,17 @@ def extract_custom_features_from_record(record: dict) -> list:
     features += structural_features(text)
     features += emphasis_features(text)
     features += numeric_features(text)
+    features += char_level_features(text)
     features += role_features(record)
 
     features += [
-        len(tokens),                           
-        len(text),                              
-        len(set(tokens)) / max(len(tokens), 1), 
-        int('?' in text)                       
+        len(tokens),
+        len(text),
+        int('?' in text)
     ]
 
     return features
+
 
 
 def train_and_evaluate(X, y, task_name, feature_name):
@@ -278,15 +298,15 @@ def run_all_experiments(task, task_name) -> Dict:
     models_registry = {}
     y = np.array(task.labels)
 
-    models_registry["BOW"] = train_and_evaluate(task.X_bow, y, task_name, "BOW")
-    models_registry["TF-IDF"] = train_and_evaluate(task.X_tfidf, y, task_name, "TF-IDF")
+    # models_registry["BOW"] = train_and_evaluate(task.X_bow, y, task_name, "BOW")
+    # models_registry["TF-IDF"] = train_and_evaluate(task.X_tfidf, y, task_name, "TF-IDF")
     
   
     X_custom_scaled = scale_custom_features(task.X_custom)
-    models_registry["Custom"] = train_and_evaluate(X_custom_scaled, y, task_name, "Custom")
+    # models_registry["Custom"] = train_and_evaluate(X_custom_scaled, y, task_name, "Custom")
     
-    X_bow_custom = combine_features(task.X_bow, X_custom_scaled)
-    models_registry["BOW_Custom"] = train_and_evaluate(X_bow_custom, y, task_name, "BOW + Custom")
+    # X_bow_custom = combine_features(task.X_bow, X_custom_scaled)
+    # models_registry["BOW_Custom"] = train_and_evaluate(X_bow_custom, y, task_name, "BOW + Custom")
 
     X_tfidf_custom = combine_features(task.X_tfidf, X_custom_scaled)
     models_registry["TFIDF_Custom"] = train_and_evaluate(X_tfidf_custom, y, task_name, "TF-IDF + Custom")
@@ -422,10 +442,8 @@ class BinaryClassificationTask:
     def create_features(self):
 
         logger.info("--- Creating Feature Vectors (Binary) ---")
-        MAX_FEATURES = 2000
-        MINDEF = 10
-        MAXDEF = 0.9
-        NGRAMS =TRIGRAMS
+
+   
         logger.info(f"Testing MINDEF: {MINDEF}, MAXDEF: {MAXDEF}, Ngram: {NGRAMS}, Max Features: {MAX_FEATURES}")
         text_data = [r['sentence_text'] for r in self.records]
         self.vectorizer_bow = CountVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
@@ -515,10 +533,7 @@ class MultiClassClassificationTask:
         logger.info("--- Creating Feature Vectors (Multi-Class) ---")
         
 
-        NGRAMS = TRIGRAMS
-        MAX_FEATURES = 2000
-        MINDEF = 10
-        MAXDEF = 0.9
+
         text_data = [r['sentence_text'] for r in self.records]
         logger.info(f"Testing MINDEF: {MINDEF}, MAXDEF: {MAXDEF}, Ngram: {NGRAMS}, Max Features: {MAX_FEATURES}")
         self.vectorizer_bow = CountVectorizer(min_df=MINDEF, max_df=MAXDEF, ngram_range=NGRAMS, max_features=MAX_FEATURES)
@@ -609,10 +624,10 @@ class MultiClassClassificationTask:
 
                 out_file = f"{feature_name}_{model_name}_predictions.txt"
                 out_path = os.path.join(output_dir, out_file)
-                with open(out_path, 'w', encoding='utf-8') as f:
-                    for p in preds:
-                        f.write(f"{label_map[p]}\n")
-                logger.info(f"Saved predictions to {out_path}")
+                # with open(out_path, 'w', encoding='utf-8') as f:
+                #     for p in preds:
+                #         f.write(f"{label_map[p]}\n")
+                # logger.info(f"Saved predictions to {out_path}")
 
 
         logger.info("Computing majority vote for classification_results.txt")

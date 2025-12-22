@@ -1,33 +1,157 @@
-12:07:08 - INFO - --- Top 20 Speakers ---
-12:07:08 - INFO - 1. ראובן ריבלין: 3201
-12:07:08 - INFO - 2. א' בורג: 2337
-12:07:08 - INFO - 3. משה גפני: 1700
-12:07:08 - INFO - 4. ניסן סלומינסקי: 1413
-12:07:08 - INFO - 5. אברהם פורז: 1134
-12:07:08 - INFO - 6. מיכאל איתן: 1023
-12:07:08 - INFO - 7. עבד-אלמאלכ דהאמשה: 995
-12:07:08 - INFO - 8. אבשלום וילן: 945
-12:07:08 - INFO - 9. טלב אלסאנע: 942
-12:07:08 - INFO - 10. ד' טל: 923
-12:07:08 - INFO - 11. עזמי בשארה: 921
-12:07:08 - INFO - 12. זבולון אורלב: 920
-12:07:08 - INFO - 13. תמר גוז'נסקי: 891
-12:07:08 - INFO - 14. נסים זאב: 886
-12:07:08 - INFO - 15. יוסף ג'בארין: 827
-12:07:08 - INFO - 16. אחמד טיבי: 824
-12:07:08 - INFO - 17. מאיר שטרית: 795
-12:07:08 - INFO - 18. ש' וייס: 785
-12:07:08 - INFO - 19. רוני בר-און: 784
-12:07:08 - INFO - 20. שאול יהלום: 777
-12:07:11 - INFO - Searching for variations of 'ריבלין' and 'בורג'
-12:07:12 - INFO - Found 3 variations for ריבלין: {'ראובן ריבלין', 'רובי ריבלין', "ר' ריבלין"}
-12:07:12 - INFO - Found 2 variations for בורג: {'אברהם בורג', "א' בורג"}
-12:07:16 - INFO - --- Binary Data Loaded ---
-12:07:16 - INFO - Class 1 (Label 0): 3509
-12:07:16 - INFO - Class 2 (Label 1): 2487
-12:07:16 - INFO - Total: 5996
-12:07:17 - INFO - --- Balancing Binary Classes ---
-12:07:17 - INFO - Counts before: Class 0=3509, Class 1=2487
-12:07:17 - INFO - Counts after: Class 0=2487, Class 1=2487
-12:07:21 - INFO - --- Creating Feature Vectors (Binary) ---
-12:07:23 - INFO - Testing MINDEF: 10, MAXDEF: 0.9, Ngram: (1, 3), Max Features: 2000
+18:31:49 - INFO - --- Top 20 Speakers ---
+18:31:49 - INFO - 1. ראובן ריבלין: 3201
+18:31:49 - INFO - 2. א' בורג: 2337
+18:31:49 - INFO - 3. משה גפני: 1700
+18:31:49 - INFO - 4. ניסן סלומינסקי: 1413
+18:31:49 - INFO - 5. אברהם פורז: 1134
+18:31:49 - INFO - 6. מיכאל איתן: 1023
+18:31:49 - INFO - 7. עבד-אלמאלכ דהאמשה: 995
+18:31:49 - INFO - 8. אבשלום וילן: 945
+18:31:49 - INFO - 9. טלב אלסאנע: 942
+18:31:49 - INFO - 10. ד' טל: 923
+18:31:49 - INFO - 11. עזמי בשארה: 921
+18:31:49 - INFO - 12. זבולון אורלב: 920
+18:31:49 - INFO - 13. תמר גוז'נסקי: 891
+18:31:49 - INFO - 14. נסים זאב: 886
+18:31:49 - INFO - 15. יוסף ג'בארין: 827
+18:31:49 - INFO - 16. אחמד טיבי: 824
+18:31:49 - INFO - 17. מאיר שטרית: 795
+18:31:49 - INFO - 18. ש' וייס: 785
+18:31:49 - INFO - 19. רוני בר-און: 784
+18:31:49 - INFO - 20. שאול יהלום: 777
+18:31:49 - INFO - Searching for variations of 'ריבלין' and 'בורג'
+18:31:49 - INFO - Found 3 variations for ריבלין: {'רובי ריבלין', "ר' ריבלין", 'ראובן ריבלין'}
+18:31:49 - INFO - Found 2 variations for בורג: {'אברהם בורג', "א' בורג"}
+18:31:50 - INFO - --- Binary Data Loaded ---
+18:31:50 - INFO - Class 1 (Label 0): 3509
+18:31:50 - INFO - Class 2 (Label 1): 2487
+18:31:50 - INFO - Total: 5996
+18:31:50 - INFO - --- Balancing Binary Classes ---
+18:31:50 - INFO - Counts before: Class 0=3509, Class 1=2487
+18:31:50 - INFO - Counts after: Class 0=2487, Class 1=2487
+18:31:50 - INFO - --- Creating Feature Vectors (Binary) ---
+18:31:50 - INFO - Testing MINDEF: 3, MAXDEF: 0.9, Ngram: (1, 7), Max Features: 2000
+18:31:50 - INFO - BOW Vector shape: (4974, 2000)
+18:31:51 - INFO - TF-IDF Vector shape: (4974, 2000)
+18:31:51 - INFO - Custom Vector shape: (4974, 33)
+18:31:51 - INFO - Loading Multi-Class Data...
+18:31:52 - INFO - --- Multi-Class Data Loaded ---
+18:31:52 - INFO - Class 0: 3509, Class 1: 2487, Class 2: 102137
+18:31:52 - INFO - Total: 108133
+18:31:52 - INFO - --- Balancing Multi-Class Classes ---
+18:31:52 - INFO - Counts before: 0=3509, 1=2487, 2=102137
+18:31:52 - INFO - Down-sampling to 2487 per class.
+18:31:52 - INFO - Counts after: 0=2487, 1=2487, 2=2487
+18:31:52 - INFO - --- Creating Feature Vectors (Multi-Class) ---
+18:31:52 - INFO - Testing MINDEF: 3, MAXDEF: 0.9, Ngram: (1, 7), Max Features: 2000
+18:31:53 - INFO - BOW Vector shape: (7461, 2000)
+18:31:54 - INFO - TF-IDF Vector shape: (7461, 2000)
+18:31:54 - INFO - Custom Vector shape: (7461, 33)
+18:31:54 - INFO - 
+==============================
+18:31:54 - INFO -  RUNNING BINARY CLASSIFICATION 
+18:31:54 - INFO - ==============================
+18:31:54 - INFO - 
+===== Binary Task | TF-IDF + Custom =====
+18:31:55 - INFO - k=1: f1=0.8152
+18:31:56 - INFO - k=3: f1=0.8245
+18:31:56 - INFO - k=5: f1=0.8249
+18:31:57 - INFO - k=7: f1=0.8244
+18:31:57 - INFO - k=9: f1=0.8268
+18:31:58 - INFO - k=11: f1=0.8276
+18:31:58 - INFO - k=15: f1=0.8178
+18:31:59 - INFO - k=21: f1=0.8178
+18:31:59 - INFO - Best k = 11 (score=0.8276)
+18:31:59 - INFO - --- KNN (k=11) ---
+              precision    recall  f1-score   support
+
+           0      0.815     0.848     0.831      2487
+           1      0.841     0.808     0.824      2487
+
+    accuracy                          0.828      4974
+   macro avg      0.828     0.828     0.828      4974
+weighted avg      0.828     0.828     0.828      4974
+
+18:32:00 - INFO - LR: C=0.01, max_iter=500 -> F1=0.8037
+18:32:00 - INFO - LR: C=0.01, max_iter=1000 -> F1=0.8037
+18:32:00 - INFO - LR: C=0.01, max_iter=2000 -> F1=0.8037
+18:32:00 - INFO - LR: C=0.1, max_iter=500 -> F1=0.8209
+18:32:00 - INFO - LR: C=0.1, max_iter=1000 -> F1=0.8209
+18:32:00 - INFO - LR: C=0.1, max_iter=2000 -> F1=0.8209
+18:32:01 - INFO - LR: C=1, max_iter=500 -> F1=0.8669
+18:32:01 - INFO - LR: C=1, max_iter=1000 -> F1=0.8669
+18:32:01 - INFO - LR: C=1, max_iter=2000 -> F1=0.8669
+18:32:02 - INFO - LR: C=10, max_iter=500 -> F1=0.8860
+18:32:03 - INFO - LR: C=10, max_iter=1000 -> F1=0.8860
+18:32:03 - INFO - LR: C=10, max_iter=2000 -> F1=0.8860
+18:32:03 - INFO - 
+Best LR params: {'C': 10, 'max_iter': 500}, Best F1=0.8860
+18:32:04 - INFO - --- Logistic Regression {'C': 10, 'max_iter': 500} ---
+              precision    recall  f1-score   support
+
+           0      0.875     0.900     0.888      2487
+           1      0.897     0.872     0.884      2487
+
+    accuracy                          0.886      4974
+   macro avg      0.886     0.886     0.886      4974
+weighted avg      0.886     0.886     0.886      4974
+
+18:32:04 - INFO - 
+==============================
+18:32:04 - INFO -  RUNNING MULTI-CLASS CLASSIFICATION 
+18:32:04 - INFO - ==============================
+18:32:04 - INFO - 
+===== Multi-Class | TF-IDF + Custom =====
+18:32:06 - INFO - k=1: f1=0.6468
+18:32:07 - INFO - k=3: f1=0.6616
+18:32:08 - INFO - k=5: f1=0.6644
+18:32:09 - INFO - k=7: f1=0.6791
+18:32:10 - INFO - k=9: f1=0.6829
+18:32:12 - INFO - k=11: f1=0.6855
+18:32:13 - INFO - k=15: f1=0.6847
+18:32:13 - INFO - k=21: f1=0.6843
+18:32:13 - INFO - Best k = 11 (score=0.6855)
+18:32:15 - INFO - --- KNN (k=11) ---
+              precision    recall  f1-score   support
+
+           0      0.695     0.701     0.698      2487
+           1      0.725     0.717     0.721      2487
+           2      0.637     0.638     0.637      2487
+
+    accuracy                          0.685      7461
+   macro avg      0.686     0.685     0.685      7461
+weighted avg      0.686     0.685     0.685      7461
+
+18:32:15 - INFO - LR: C=0.01, max_iter=500 -> F1=0.6956
+18:32:15 - INFO - LR: C=0.01, max_iter=1000 -> F1=0.6956
+18:32:16 - INFO - LR: C=0.01, max_iter=2000 -> F1=0.6956
+18:32:17 - INFO - LR: C=0.1, max_iter=500 -> F1=0.7458
+18:32:17 - INFO - LR: C=0.1, max_iter=1000 -> F1=0.7458
+18:32:18 - INFO - LR: C=0.1, max_iter=2000 -> F1=0.7458
+18:32:20 - INFO - LR: C=1, max_iter=500 -> F1=0.7790
+18:32:22 - INFO - LR: C=1, max_iter=1000 -> F1=0.7790
+18:32:24 - INFO - LR: C=1, max_iter=2000 -> F1=0.7790
+18:32:28 - INFO - LR: C=10, max_iter=500 -> F1=0.7659
+18:32:32 - INFO - LR: C=10, max_iter=1000 -> F1=0.7659
+18:32:36 - INFO - LR: C=10, max_iter=2000 -> F1=0.7659
+18:32:36 - INFO - 
+Best LR params: {'C': 1, 'max_iter': 500}, Best F1=0.7790
+18:32:38 - INFO - --- Logistic Regression {'C': 1, 'max_iter': 500} ---
+              precision    recall  f1-score   support
+
+           0      0.762     0.742     0.752      2487
+           1      0.886     0.800     0.840      2487
+           2      0.704     0.790     0.745      2487
+
+    accuracy                          0.777      7461
+   macro avg      0.784     0.777     0.779      7461
+weighted avg      0.784     0.777     0.779      7461
+
+18:32:38 - INFO - 
+=== STAGE 5: INFERENCE (Reusing Experiment Models) ===
+18:32:38 - INFO - Inference started on: ../knesset_sentences.txt
+18:32:38 - INFO - --- Using features: TFIDF_Custom ---
+18:32:38 - INFO - Predicting with TFIDF_Custom + lr
+18:32:38 - INFO - Predicting with TFIDF_Custom + knn
+18:32:38 - INFO - Computing majority vote for classification_results.txt
+18:32:38 - INFO - Saved majority vote predictions to out13/classification_results.txt
