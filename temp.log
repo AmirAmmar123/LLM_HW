@@ -298,3 +298,155 @@
 2025-12-29 14:08:16,693 : INFO : Model saved at: ./output_directory/knesset_word2vec.model
 2025-12-29 14:08:16,693 : INFO : Total vocabulary size: 78706
 2025-12-29 14:08:16,742 : INFO : Total trained tokens (after min_count): 1338316
+2025-12-29 20:59:09,260 : INFO : Training Word2Vec model...
+2025-12-29 20:59:09,273 : INFO : collecting all words and their counts
+2025-12-29 20:59:09,273 : ERROR : Error during corpus iteration: [Errno 2] No such file or directory: './corpus_file.jsonl'
+2025-12-29 20:59:10,910 : CRITICAL : Process failed: [Errno 2] No such file or directory: './corpus_file.jsonl'
+2025-12-29 21:02:39,467 : INFO : Training Word2Vec model...
+2025-12-29 21:02:39,469 : INFO : collecting all words and their counts
+2025-12-29 21:02:39,469 : INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2025-12-29 21:02:39,614 : INFO : PROGRESS: at sentence #10000, processed 131580 words, keeping 22585 word types
+2025-12-29 21:02:39,748 : INFO : PROGRESS: at sentence #20000, processed 258632 words, keeping 33227 word types
+2025-12-29 21:02:39,884 : INFO : PROGRESS: at sentence #30000, processed 390440 words, keeping 40817 word types
+2025-12-29 21:02:40,012 : INFO : PROGRESS: at sentence #40000, processed 494865 words, keeping 45707 word types
+2025-12-29 21:02:40,148 : INFO : PROGRESS: at sentence #50000, processed 621679 words, keeping 52080 word types
+2025-12-29 21:02:40,282 : INFO : PROGRESS: at sentence #60000, processed 746358 words, keeping 57976 word types
+2025-12-29 21:02:40,425 : INFO : PROGRESS: at sentence #70000, processed 880245 words, keeping 64284 word types
+2025-12-29 21:02:40,566 : INFO : PROGRESS: at sentence #80000, processed 998612 words, keeping 68312 word types
+2025-12-29 21:02:40,702 : INFO : PROGRESS: at sentence #90000, processed 1121143 words, keeping 73063 word types
+2025-12-29 21:02:40,831 : INFO : PROGRESS: at sentence #100000, processed 1237974 words, keeping 76382 word types
+2025-12-29 21:02:40,938 : INFO : collected 78706 word types from a corpus of 1338316 raw words and 108133 sentences
+2025-12-29 21:02:40,939 : INFO : Creating a fresh vocabulary
+2025-12-29 21:02:41,757 : INFO : Word2Vec lifecycle event {'msg': 'effective_min_count=1 retains 78706 unique words (100.00% of original 78706, drops 0)', 'datetime': '2025-12-29T21:02:41.757713', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-29 21:02:41,758 : INFO : Word2Vec lifecycle event {'msg': 'effective_min_count=1 leaves 1338316 word corpus (100.00% of original 1338316, drops 0)', 'datetime': '2025-12-29T21:02:41.758255', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-29 21:02:42,584 : INFO : deleting the raw counts dictionary of 78706 items
+2025-12-29 21:02:42,587 : INFO : sample=0.001 downsamples 29 most-common words
+2025-12-29 21:02:42,587 : INFO : Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 1202899.162943774 word corpus (89.9%% of prior 1338316)', 'datetime': '2025-12-29T21:02:42.587937', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-29 21:02:43,416 : INFO : estimated required memory for 78706 words and 50 dimensions: 70835400 bytes
+2025-12-29 21:02:43,416 : INFO : resetting layer weights
+2025-12-29 21:02:43,436 : INFO : Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2025-12-29T21:02:43.436178', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'build_vocab'}
+2025-12-29 21:02:43,436 : INFO : Word2Vec lifecycle event {'msg': 'training model with 3 workers on 78706 vocabulary and 50 features, using sg=0 hs=0 sample=0.001 negative=5 window=5 shrink_windows=True', 'datetime': '2025-12-29T21:02:43.436801', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'train'}
+2025-12-29 21:02:44,445 : INFO : EPOCH 0 - PROGRESS: at 48.09% examples, 582068 words/s, in_qsize 0, out_qsize 0
+2025-12-29 21:02:45,452 : INFO : EPOCH 0 - PROGRESS: at 96.50% examples, 576035 words/s, in_qsize 0, out_qsize 0
+2025-12-29 21:02:45,519 : INFO : EPOCH 0: training on 1338316 raw words (1202883 effective words) took 2.1s, 578670 effective words/s
+2025-12-29 21:02:46,546 : INFO : EPOCH 1 - PROGRESS: at 40.90% examples, 483360 words/s, in_qsize 6, out_qsize 0
+2025-12-29 21:02:47,552 : INFO : EPOCH 1 - PROGRESS: at 87.33% examples, 518149 words/s, in_qsize 6, out_qsize 1
+2025-12-29 21:02:47,710 : INFO : EPOCH 1: training on 1338316 raw words (1203165 effective words) took 2.2s, 549712 effective words/s
+2025-12-29 21:02:48,731 : INFO : EPOCH 2 - PROGRESS: at 38.78% examples, 458877 words/s, in_qsize 6, out_qsize 0
+2025-12-29 21:02:49,734 : INFO : EPOCH 2 - PROGRESS: at 84.40% examples, 507171 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:02:49,964 : INFO : EPOCH 2: training on 1338316 raw words (1202999 effective words) took 2.3s, 534350 effective words/s
+2025-12-29 21:02:51,031 : INFO : EPOCH 3 - PROGRESS: at 43.82% examples, 524489 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:02:52,048 : INFO : EPOCH 3 - PROGRESS: at 88.62% examples, 527092 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:02:52,207 : INFO : EPOCH 3: training on 1338316 raw words (1202800 effective words) took 2.2s, 549574 effective words/s
+2025-12-29 21:02:53,236 : INFO : EPOCH 4 - PROGRESS: at 40.90% examples, 481790 words/s, in_qsize 5, out_qsize 1
+2025-12-29 21:02:54,239 : INFO : EPOCH 4 - PROGRESS: at 83.78% examples, 500665 words/s, in_qsize 3, out_qsize 2
+2025-12-29 21:02:54,472 : INFO : EPOCH 4: training on 1338316 raw words (1202620 effective words) took 2.3s, 531506 effective words/s
+2025-12-29 21:02:54,473 : INFO : Word2Vec lifecycle event {'msg': 'training on 6691580 raw words (6014467 effective words) took 11.0s, 544995 effective words/s', 'datetime': '2025-12-29T21:02:54.473029', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'train'}
+2025-12-29 21:02:54,473 : INFO : Word2Vec lifecycle event {'params': 'Word2Vec<vocab=78706, vector_size=50, alpha=0.025>', 'datetime': '2025-12-29T21:02:54.473433', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'created'}
+2025-12-29 21:02:55,388 : INFO : Word2Vec lifecycle event {'fname_or_handle': './output_dir/knesset_word2vec.model', 'separately': 'None', 'sep_limit': 10485760, 'ignore': frozenset(), 'datetime': '2025-12-29T21:02:55.388515', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'saving'}
+2025-12-29 21:02:55,389 : INFO : not storing attribute cum_table
+2025-12-29 21:02:55,514 : INFO : saved ./output_dir/knesset_word2vec.model
+2025-12-29 21:02:55,514 : INFO : Model saved to ./output_dir/knesset_word2vec.model
+2025-12-29 21:02:58,176 : INFO : Executing Part B analysis tasks...
+2025-12-29 21:03:01,189 : CRITICAL : Process failed: name 'cite' is not defined
+2025-12-29 21:04:56,220 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-29 21:04:56,687 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-29 21:04:56,751 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-29 21:04:56,751 : INFO : setting ignored attribute cum_table to None
+2025-12-29 21:04:57,560 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-29T21:04:57.560446', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-29 21:05:00,250 : INFO : Executing Part B analysis tasks...
+2025-12-29 21:06:37,671 : INFO : Analysis completed successfully.
+2025-12-29 21:08:20,096 : INFO : Training Word2Vec model...
+2025-12-29 21:08:20,099 : INFO : collecting all words and their counts
+2025-12-29 21:08:20,099 : INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2025-12-29 21:08:20,248 : INFO : PROGRESS: at sentence #10000, processed 131580 words, keeping 22585 word types
+2025-12-29 21:08:20,390 : INFO : PROGRESS: at sentence #20000, processed 258632 words, keeping 33227 word types
+2025-12-29 21:08:20,537 : INFO : PROGRESS: at sentence #30000, processed 390440 words, keeping 40817 word types
+2025-12-29 21:08:20,675 : INFO : PROGRESS: at sentence #40000, processed 494865 words, keeping 45707 word types
+2025-12-29 21:08:20,823 : INFO : PROGRESS: at sentence #50000, processed 621679 words, keeping 52080 word types
+2025-12-29 21:08:20,963 : INFO : PROGRESS: at sentence #60000, processed 746358 words, keeping 57976 word types
+2025-12-29 21:08:21,109 : INFO : PROGRESS: at sentence #70000, processed 880245 words, keeping 64284 word types
+2025-12-29 21:08:21,245 : INFO : PROGRESS: at sentence #80000, processed 998612 words, keeping 68312 word types
+2025-12-29 21:08:21,389 : INFO : PROGRESS: at sentence #90000, processed 1121143 words, keeping 73063 word types
+2025-12-29 21:08:21,524 : INFO : PROGRESS: at sentence #100000, processed 1237974 words, keeping 76382 word types
+2025-12-29 21:08:21,637 : INFO : collected 78706 word types from a corpus of 1338316 raw words and 108133 sentences
+2025-12-29 21:08:21,638 : INFO : Creating a fresh vocabulary
+2025-12-29 21:08:22,476 : INFO : Word2Vec lifecycle event {'msg': 'effective_min_count=1 retains 78706 unique words (100.00% of original 78706, drops 0)', 'datetime': '2025-12-29T21:08:22.476221', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-29 21:08:22,476 : INFO : Word2Vec lifecycle event {'msg': 'effective_min_count=1 leaves 1338316 word corpus (100.00% of original 1338316, drops 0)', 'datetime': '2025-12-29T21:08:22.476758', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-29 21:08:23,313 : INFO : deleting the raw counts dictionary of 78706 items
+2025-12-29 21:08:23,314 : INFO : sample=0.001 downsamples 29 most-common words
+2025-12-29 21:08:23,315 : INFO : Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 1202899.162943774 word corpus (89.9%% of prior 1338316)', 'datetime': '2025-12-29T21:08:23.315056', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-29 21:08:24,176 : INFO : estimated required memory for 78706 words and 100 dimensions: 102317800 bytes
+2025-12-29 21:08:24,176 : INFO : resetting layer weights
+2025-12-29 21:08:24,217 : INFO : Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2025-12-29T21:08:24.217756', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'build_vocab'}
+2025-12-29 21:08:24,218 : INFO : Word2Vec lifecycle event {'msg': 'training model with 3 workers on 78706 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5 shrink_windows=True', 'datetime': '2025-12-29T21:08:24.218337', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'train'}
+2025-12-29 21:08:25,227 : INFO : EPOCH 0 - PROGRESS: at 36.54% examples, 439298 words/s, in_qsize 6, out_qsize 1
+2025-12-29 21:08:26,240 : INFO : EPOCH 0 - PROGRESS: at 81.07% examples, 486285 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:08:26,601 : INFO : EPOCH 0: training on 1338316 raw words (1202861 effective words) took 2.4s, 506049 effective words/s
+2025-12-29 21:08:27,616 : INFO : EPOCH 1 - PROGRESS: at 39.47% examples, 470256 words/s, in_qsize 6, out_qsize 0
+2025-12-29 21:08:28,624 : INFO : EPOCH 1 - PROGRESS: at 81.73% examples, 489632 words/s, in_qsize 4, out_qsize 1
+2025-12-29 21:08:28,938 : INFO : EPOCH 1: training on 1338316 raw words (1202914 effective words) took 2.3s, 515028 effective words/s
+2025-12-29 21:08:29,957 : INFO : EPOCH 2 - PROGRESS: at 37.33% examples, 442052 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:08:30,958 : INFO : EPOCH 2 - PROGRESS: at 80.34% examples, 481536 words/s, in_qsize 4, out_qsize 1
+2025-12-29 21:08:31,292 : INFO : EPOCH 2: training on 1338316 raw words (1202763 effective words) took 2.4s, 511477 effective words/s
+2025-12-29 21:08:32,299 : INFO : EPOCH 3 - PROGRESS: at 36.54% examples, 438497 words/s, in_qsize 6, out_qsize 0
+2025-12-29 21:08:33,312 : INFO : EPOCH 3 - PROGRESS: at 81.73% examples, 490396 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:08:33,613 : INFO : EPOCH 3: training on 1338316 raw words (1203014 effective words) took 2.3s, 518728 effective words/s
+2025-12-29 21:08:34,625 : INFO : EPOCH 4 - PROGRESS: at 40.15% examples, 480925 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:08:35,653 : INFO : EPOCH 4 - PROGRESS: at 82.46% examples, 490195 words/s, in_qsize 6, out_qsize 0
+2025-12-29 21:08:35,945 : INFO : EPOCH 4: training on 1338316 raw words (1202809 effective words) took 2.3s, 516427 effective words/s
+2025-12-29 21:08:35,945 : INFO : Word2Vec lifecycle event {'msg': 'training on 6691580 raw words (6014361 effective words) took 11.7s, 512862 effective words/s', 'datetime': '2025-12-29T21:08:35.945729', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'train'}
+2025-12-29 21:08:35,946 : INFO : Word2Vec lifecycle event {'params': 'Word2Vec<vocab=78706, vector_size=100, alpha=0.025>', 'datetime': '2025-12-29T21:08:35.946185', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'created'}
+2025-12-29 21:08:36,574 : INFO : Word2Vec lifecycle event {'fname_or_handle': './output_dir/knesset_word2vec.model', 'separately': 'None', 'sep_limit': 10485760, 'ignore': frozenset(), 'datetime': '2025-12-29T21:08:36.574277', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'saving'}
+2025-12-29 21:08:36,575 : INFO : not storing attribute cum_table
+2025-12-29 21:08:36,751 : INFO : saved ./output_dir/knesset_word2vec.model
+2025-12-29 21:08:36,751 : INFO : Model saved to ./output_dir/knesset_word2vec.model
+2025-12-29 21:08:37,311 : INFO : Executing Part B analysis tasks...
+2025-12-29 21:08:41,722 : INFO : Analysis completed successfully.
+2025-12-29 21:09:25,738 : INFO : Training Word2Vec model...
+2025-12-29 21:09:25,740 : INFO : collecting all words and their counts
+2025-12-29 21:09:25,740 : INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2025-12-29 21:09:25,886 : INFO : PROGRESS: at sentence #10000, processed 131580 words, keeping 22585 word types
+2025-12-29 21:09:26,028 : INFO : PROGRESS: at sentence #20000, processed 258632 words, keeping 33227 word types
+2025-12-29 21:09:26,177 : INFO : PROGRESS: at sentence #30000, processed 390440 words, keeping 40817 word types
+2025-12-29 21:09:26,312 : INFO : PROGRESS: at sentence #40000, processed 494865 words, keeping 45707 word types
+2025-12-29 21:09:26,457 : INFO : PROGRESS: at sentence #50000, processed 621679 words, keeping 52080 word types
+2025-12-29 21:09:26,598 : INFO : PROGRESS: at sentence #60000, processed 746358 words, keeping 57976 word types
+2025-12-29 21:09:26,744 : INFO : PROGRESS: at sentence #70000, processed 880245 words, keeping 64284 word types
+2025-12-29 21:09:26,884 : INFO : PROGRESS: at sentence #80000, processed 998612 words, keeping 68312 word types
+2025-12-29 21:09:27,026 : INFO : PROGRESS: at sentence #90000, processed 1121143 words, keeping 73063 word types
+2025-12-29 21:09:27,159 : INFO : PROGRESS: at sentence #100000, processed 1237974 words, keeping 76382 word types
+2025-12-29 21:09:27,267 : INFO : collected 78706 word types from a corpus of 1338316 raw words and 108133 sentences
+2025-12-29 21:09:27,267 : INFO : Creating a fresh vocabulary
+2025-12-29 21:09:28,078 : INFO : Word2Vec lifecycle event {'msg': 'effective_min_count=1 retains 78706 unique words (100.00% of original 78706, drops 0)', 'datetime': '2025-12-29T21:09:28.078453', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-29 21:09:28,079 : INFO : Word2Vec lifecycle event {'msg': 'effective_min_count=1 leaves 1338316 word corpus (100.00% of original 1338316, drops 0)', 'datetime': '2025-12-29T21:09:28.078976', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-29 21:09:28,910 : INFO : deleting the raw counts dictionary of 78706 items
+2025-12-29 21:09:28,912 : INFO : sample=0.001 downsamples 29 most-common words
+2025-12-29 21:09:28,912 : INFO : Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 1202899.162943774 word corpus (89.9%% of prior 1338316)', 'datetime': '2025-12-29T21:09:28.912680', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-29 21:09:29,726 : INFO : estimated required memory for 78706 words and 30 dimensions: 58242440 bytes
+2025-12-29 21:09:29,726 : INFO : resetting layer weights
+2025-12-29 21:09:29,737 : INFO : Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2025-12-29T21:09:29.737395', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'build_vocab'}
+2025-12-29 21:09:29,738 : INFO : Word2Vec lifecycle event {'msg': 'training model with 3 workers on 78706 vocabulary and 30 features, using sg=0 hs=0 sample=0.001 negative=5 window=5 shrink_windows=True', 'datetime': '2025-12-29T21:09:29.738067', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'train'}
+2025-12-29 21:09:30,749 : INFO : EPOCH 0 - PROGRESS: at 39.45% examples, 474257 words/s, in_qsize 4, out_qsize 2
+2025-12-29 21:09:31,759 : INFO : EPOCH 0 - PROGRESS: at 83.72% examples, 504520 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:09:31,995 : INFO : EPOCH 0: training on 1338316 raw words (1202941 effective words) took 2.3s, 534294 effective words/s
+2025-12-29 21:09:33,022 : INFO : EPOCH 1 - PROGRESS: at 42.29% examples, 500412 words/s, in_qsize 4, out_qsize 1
+2025-12-29 21:09:34,025 : INFO : EPOCH 1 - PROGRESS: at 88.04% examples, 522934 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:09:34,196 : INFO : EPOCH 1: training on 1338316 raw words (1202606 effective words) took 2.2s, 546880 effective words/s
+2025-12-29 21:09:35,210 : INFO : EPOCH 2 - PROGRESS: at 38.78% examples, 462666 words/s, in_qsize 4, out_qsize 2
+2025-12-29 21:09:36,219 : INFO : EPOCH 2 - PROGRESS: at 84.40% examples, 507831 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:09:36,441 : INFO : EPOCH 2: training on 1338316 raw words (1202991 effective words) took 2.2s, 536492 effective words/s
+2025-12-29 21:09:37,445 : INFO : EPOCH 3 - PROGRESS: at 38.78% examples, 466386 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:09:38,458 : INFO : EPOCH 3 - PROGRESS: at 84.85% examples, 508893 words/s, in_qsize 4, out_qsize 1
+2025-12-29 21:09:38,674 : INFO : EPOCH 3: training on 1338316 raw words (1202826 effective words) took 2.2s, 539127 effective words/s
+2025-12-29 21:09:39,696 : INFO : EPOCH 4 - PROGRESS: at 40.15% examples, 476258 words/s, in_qsize 6, out_qsize 1
+2025-12-29 21:09:40,724 : INFO : EPOCH 4 - PROGRESS: at 87.33% examples, 513639 words/s, in_qsize 5, out_qsize 0
+2025-12-29 21:09:40,906 : INFO : EPOCH 4: training on 1338316 raw words (1202678 effective words) took 2.2s, 539193 effective words/s
+2025-12-29 21:09:40,907 : INFO : Word2Vec lifecycle event {'msg': 'training on 6691580 raw words (6014042 effective words) took 11.2s, 538459 effective words/s', 'datetime': '2025-12-29T21:09:40.907374', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'train'}
+2025-12-29 21:09:40,907 : INFO : Word2Vec lifecycle event {'params': 'Word2Vec<vocab=78706, vector_size=30, alpha=0.025>', 'datetime': '2025-12-29T21:09:40.907875', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'created'}
+2025-12-29 21:09:42,341 : INFO : Word2Vec lifecycle event {'fname_or_handle': './output_dir/knesset_word2vec.model', 'separately': 'None', 'sep_limit': 10485760, 'ignore': frozenset(), 'datetime': '2025-12-29T21:09:42.341094', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'saving'}
+2025-12-29 21:09:42,342 : INFO : not storing attribute cum_table
+2025-12-29 21:09:42,407 : INFO : saved ./output_dir/knesset_word2vec.model
+2025-12-29 21:09:42,407 : INFO : Model saved to ./output_dir/knesset_word2vec.model
+2025-12-29 21:09:42,761 : INFO : Executing Part B analysis tasks...
+2025-12-29 21:09:44,030 : INFO : Analysis completed successfully.
