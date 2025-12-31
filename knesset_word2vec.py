@@ -17,6 +17,53 @@ logging.basicConfig(
     ]
 )
 
+
+
+REPLACEMENT_TASKS = [
+            {
+                "id": 1,
+                "orig": "בשעות הקרובות נפתח את הדיון בסעיף הבא שעל סדר היום",
+                "targets": [
+                    {"word": "בשעות", "pos": ["בשניות","בדקות","בימים","בשנים"], "neg": ["נסגרים"]},
+                    {"word": "בסעיף", "pos": ["בנושא", "בחלק", ], "neg": []}
+                ]
+            },
+            {
+                "id": 2,
+                "orig": "אבקש מהנוכחים להתיישב כדי שנוכל להתחיל",
+                "targets": [
+                    {"word": "אבקש", "pos": ["קורא"], "neg": ["פונה"]},
+                    {"word": "להתיישב", "pos": ["לשבת", "שקט"], "neg": ["להשתתף"]}
+                ]
+            },
+            {
+                "id": 3,
+                "orig": "אנו מודים לצוות המקצועי על עבודתו",
+                "targets": [
+                    {"word": "לצוות", "pos": ["למערך","לעובדים", "לאנשים","לחייל",], "neg": []},
+                    {"word": "עבודתו", "pos": ["תרומתו", "עזרתו", "גבר"], "neg": ["שמו"]}
+                ]
+            },
+            {
+                "id": 4,
+                "orig": "הנושא יועבר להמשך טיפול בוועדת המשנה",
+                "targets": [
+                    {"word": "הנושא", "pos": ["החוק", "העניין"], "neg": []},
+                    {"word": "טיפול", "pos": [], "neg": []}
+                ]
+            },
+            {
+                "id": 5,
+                "orig": "ההצעה הובאה להצבעה ואושרה",
+                "targets": [
+                    {"word": "ההצעה", "pos": ["הבקשה", "הדרישה"], "neg": ["הגישה"]},
+                    {"word": "הובאה", "pos": ["נשלחה"], "neg": []},
+                    {"word": "ואושרה", "pos": [], "neg": ["נדחתה"]}
+                ]
+            }
+        ]
+
+
 class KnessetCorpusIterator:
     """
     Provides a memory-efficient iterator to stream sentences from the JSONL corpus.
@@ -145,36 +192,81 @@ class Word2VecManager:
         embeddings_matrix = np.array([item['emb'] for item in valid_data])
         output_path = os.path.join(output_dir, "knesset_similar_sentences.txt")
         
+        SELECTED_INDICES = [1200, 4600, 8900, 2020, 5001, 6100, 100, 90, 5, 20]
+        # with open(output_path, 'w', encoding='utf-8') as f:
+        #     for i in range(min(10, len(valid_data))):
+        #         target_emb = valid_data[i]['emb'].reshape(1, -1)
+        #         similarities = cosine_similarity(target_emb, embeddings_matrix)[0]
+        #         similarities[i] = -1
+        #         best_idx = np.argmax(similarities)
+        #         f.write(f"{valid_data[i]['raw']}: most similar sentence: {valid_data[best_idx]['raw']}\n")
+
         with open(output_path, 'w', encoding='utf-8') as f:
-            for i in range(min(10, len(valid_data))):
-                target_emb = valid_data[i]['emb'].reshape(1, -1)
+            for idx in SELECTED_INDICES:
+                if idx >= len(valid_data):
+                    continue  # safety check
+
+                target_emb = valid_data[idx]['emb'].reshape(1, -1)
                 similarities = cosine_similarity(target_emb, embeddings_matrix)[0]
-                similarities[i] = -1
+
+                # prevent self-match
+                similarities[idx] = -1
+
                 best_idx = np.argmax(similarities)
-                f.write(f"{valid_data[i]['raw']}: most similar sentence: {valid_data[best_idx]['raw']}\n")
+
+                f.write(
+                    f"{valid_data[idx]['raw']}: most similar sentence: {valid_data[best_idx]['raw']}\n"
+                )
 
     def run_red_words(self, output_dir: str):
         """
-        Performs vector arithmetic to replace highlighted words in specific sentences.
+            Executes the semantic substitution task for Part B, Section D.
+            This implementation adheres to the specific constraints:
+            1. Selecting from the top 3 similar candidates.
+            2. Utilizing anchor words for better context or OOV handling.
+            3. Maintaining the exact output format specified in the instructions.
         """
-        tasks = [
-            ("בשעות הקרובות נפתח את הדיון בסעיף הבא שעל סדר היום", "היום"),
-            ("אבקש מהנוכחים להתיישב כדי שנוכל להתחיל", "להתחיל"),
-            ("אנו מודים לצוות המקצועי על עבודתו", "המקצועי"),
-            ("הנושא יועבר להמשך טיפול בוועדת המשנה", "המשנה"),
-            ("ההצעה הובאה להצבעה ואושרה", "ואושרה")
-        ] 
+
         
         output_path = os.path.join(output_dir, "red_words_sentences.txt")
-        with open(output_path, 'w', encoding='utf-8') as f:
-            for i, (orig, red_word) in enumerate(tasks, 1):
-                try:
-                    new_word, _ = self.model.wv.most_similar(positive=[red_word], topn=1)[0]
-                    new_sent = orig.replace(red_word, new_word)
-                    f.write(f"{i}: {orig}: {new_sent}\n")
-                    f.write(f"replaced words: ({red_word}: {new_word})\n")
-                except Exception:
-                    continue
+        
+        try:
+            with open(output_path, 'w', encoding='utf-8') as f:
+                for item in REPLACEMENT_TASKS:
+                    current_sentence = item["orig"]
+                    applied_replacements = []
+                    
+                    for target_config in item["targets"]:
+                        original_word = target_config["word"]
+                        
+          
+                        pos_anchors = target_config["pos"]
+                        if original_word in self.model.wv:
+                            pos_anchors.append(original_word)
+                        
+                
+                        candidates = self.model.wv.most_similar(
+                            positive=pos_anchors, 
+                            negative=target_config["neg"], 
+                            topn=3
+                        )
+                        
+           
+                        chosen_substitute = original_word
+                        for candidate, score in candidates:
+                            if candidate != original_word:
+                                chosen_substitute = candidate
+                                break
+      
+                        current_sentence = current_sentence.replace(original_word, chosen_substitute)
+                        applied_replacements.append(f"({original_word}: {chosen_substitute})")
+                    
+
+                    f.write(f"{item['id']}: {item['orig']}: {current_sentence}\n")
+                    f.write(f"replaced words: {', '.join(applied_replacements)}\n\n")
+                    
+        except Exception as e:
+            logging.error(f"Semantic substitution module encountered an error: {e}")
 
 def main():
     """
@@ -189,7 +281,7 @@ def main():
     model_path = os.path.join(args.output_dir, model_filename)
 
     try:
-        manager = Word2VecManager(vector_size=30, window=5, min_count=1)
+        manager = Word2VecManager(vector_size=50, window=5, min_count=1)
 
         if os.path.exists(model_path):
             manager.load_model(model_path)
@@ -198,11 +290,12 @@ def main():
             manager.train_model(corpus_iterator)
             manager.save(args.output_dir, model_filename)
 
+        
         logging.info("Executing Part B analysis tasks...")
         manager.run_word_similarity(args.output_dir)
         
         corpus_iterator = KnessetCorpusIterator(args.corpus_path)
-        raw_samples = corpus_iterator.get_raw_sentences(limit=10000)
+        raw_samples = corpus_iterator.get_raw_sentences(limit=50000)
         manager.run_sentence_similarity(raw_samples, args.output_dir)
         
         manager.run_red_words(args.output_dir)

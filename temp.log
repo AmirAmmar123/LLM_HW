@@ -450,3 +450,601 @@
 2025-12-29 21:09:42,407 : INFO : Model saved to ./output_dir/knesset_word2vec.model
 2025-12-29 21:09:42,761 : INFO : Executing Part B analysis tasks...
 2025-12-29 21:09:44,030 : INFO : Analysis completed successfully.
+2025-12-31 10:06:57,275 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 10:06:57,288 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 10:06:57,352 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:06:57,352 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:06:58,124 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:06:58.124732', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:06:59,196 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:13:02,614 : INFO : Training Word2Vec model...
+2025-12-31 10:13:02,617 : INFO : collecting all words and their counts
+2025-12-31 10:13:02,618 : INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+2025-12-31 10:13:02,756 : INFO : PROGRESS: at sentence #10000, processed 131580 words, keeping 22585 word types
+2025-12-31 10:13:02,890 : INFO : PROGRESS: at sentence #20000, processed 258632 words, keeping 33227 word types
+2025-12-31 10:13:03,050 : INFO : PROGRESS: at sentence #30000, processed 390440 words, keeping 40817 word types
+2025-12-31 10:13:03,175 : INFO : PROGRESS: at sentence #40000, processed 494865 words, keeping 45707 word types
+2025-12-31 10:13:03,309 : INFO : PROGRESS: at sentence #50000, processed 621679 words, keeping 52080 word types
+2025-12-31 10:13:03,445 : INFO : PROGRESS: at sentence #60000, processed 746358 words, keeping 57976 word types
+2025-12-31 10:13:03,581 : INFO : PROGRESS: at sentence #70000, processed 880245 words, keeping 64284 word types
+2025-12-31 10:13:03,710 : INFO : PROGRESS: at sentence #80000, processed 998612 words, keeping 68312 word types
+2025-12-31 10:13:03,846 : INFO : PROGRESS: at sentence #90000, processed 1121143 words, keeping 73063 word types
+2025-12-31 10:13:03,973 : INFO : PROGRESS: at sentence #100000, processed 1237974 words, keeping 76382 word types
+2025-12-31 10:13:04,080 : INFO : collected 78706 word types from a corpus of 1338316 raw words and 108133 sentences
+2025-12-31 10:13:04,081 : INFO : Creating a fresh vocabulary
+2025-12-31 10:13:04,838 : INFO : Word2Vec lifecycle event {'msg': 'effective_min_count=1 retains 78706 unique words (100.00% of original 78706, drops 0)', 'datetime': '2025-12-31T10:13:04.838560', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-31 10:13:04,839 : INFO : Word2Vec lifecycle event {'msg': 'effective_min_count=1 leaves 1338316 word corpus (100.00% of original 1338316, drops 0)', 'datetime': '2025-12-31T10:13:04.839107', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-31 10:13:05,630 : INFO : deleting the raw counts dictionary of 78706 items
+2025-12-31 10:13:05,632 : INFO : sample=0.001 downsamples 29 most-common words
+2025-12-31 10:13:05,632 : INFO : Word2Vec lifecycle event {'msg': 'downsampling leaves estimated 1202899.162943774 word corpus (89.9%% of prior 1338316)', 'datetime': '2025-12-31T10:13:05.632936', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'prepare_vocab'}
+2025-12-31 10:13:06,536 : INFO : estimated required memory for 78706 words and 50 dimensions: 70835400 bytes
+2025-12-31 10:13:06,537 : INFO : resetting layer weights
+2025-12-31 10:13:06,555 : INFO : Word2Vec lifecycle event {'update': False, 'trim_rule': 'None', 'datetime': '2025-12-31T10:13:06.555400', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'build_vocab'}
+2025-12-31 10:13:06,556 : INFO : Word2Vec lifecycle event {'msg': 'training model with 3 workers on 78706 vocabulary and 50 features, using sg=0 hs=0 sample=0.001 negative=5 window=5 shrink_windows=True', 'datetime': '2025-12-31T10:13:06.556000', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'train'}
+2025-12-31 10:13:07,567 : INFO : EPOCH 0 - PROGRESS: at 53.41% examples, 644465 words/s, in_qsize 0, out_qsize 0
+2025-12-31 10:13:08,428 : INFO : EPOCH 0: training on 1338316 raw words (1202883 effective words) took 1.9s, 644523 effective words/s
+2025-12-31 10:13:09,446 : INFO : EPOCH 1 - PROGRESS: at 43.05% examples, 513545 words/s, in_qsize 5, out_qsize 1
+2025-12-31 10:13:10,446 : INFO : EPOCH 1 - PROGRESS: at 93.86% examples, 561357 words/s, in_qsize 6, out_qsize 1
+2025-12-31 10:13:10,481 : INFO : EPOCH 1: training on 1338316 raw words (1202689 effective words) took 2.1s, 586470 effective words/s
+2025-12-31 10:13:11,524 : INFO : EPOCH 2 - PROGRESS: at 45.39% examples, 526343 words/s, in_qsize 5, out_qsize 2
+2025-12-31 10:13:12,488 : INFO : EPOCH 2: training on 1338316 raw words (1201930 effective words) took 2.0s, 599324 effective words/s
+2025-12-31 10:13:13,510 : INFO : EPOCH 3 - PROGRESS: at 46.82% examples, 556129 words/s, in_qsize 5, out_qsize 0
+2025-12-31 10:13:14,510 : INFO : EPOCH 3 - PROGRESS: at 97.15% examples, 577916 words/s, in_qsize 4, out_qsize 0
+2025-12-31 10:13:14,528 : INFO : EPOCH 3: training on 1338316 raw words (1202790 effective words) took 2.0s, 590261 effective words/s
+2025-12-31 10:13:15,561 : INFO : EPOCH 4 - PROGRESS: at 45.29% examples, 531727 words/s, in_qsize 6, out_qsize 1
+2025-12-31 10:13:16,564 : INFO : EPOCH 4 - PROGRESS: at 97.15% examples, 573765 words/s, in_qsize 4, out_qsize 0
+2025-12-31 10:13:16,580 : INFO : EPOCH 4: training on 1338316 raw words (1202914 effective words) took 2.1s, 586678 effective words/s
+2025-12-31 10:13:16,580 : INFO : Word2Vec lifecycle event {'msg': 'training on 6691580 raw words (6013206 effective words) took 10.0s, 599859 effective words/s', 'datetime': '2025-12-31T10:13:16.580715', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'train'}
+2025-12-31 10:13:16,581 : INFO : Word2Vec lifecycle event {'params': 'Word2Vec<vocab=78706, vector_size=50, alpha=0.025>', 'datetime': '2025-12-31T10:13:16.581016', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'created'}
+2025-12-31 10:13:17,374 : INFO : Word2Vec lifecycle event {'fname_or_handle': './output_dir/knesset_word2vec.model', 'separately': 'None', 'sep_limit': 10485760, 'ignore': frozenset(), 'datetime': '2025-12-31T10:13:17.373993', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'saving'}
+2025-12-31 10:13:17,374 : INFO : not storing attribute cum_table
+2025-12-31 10:13:17,492 : INFO : saved ./output_dir/knesset_word2vec.model
+2025-12-31 10:13:17,492 : INFO : Model saved to ./output_dir/knesset_word2vec.model
+2025-12-31 10:13:22,122 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:19:30,875 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 10:19:30,887 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 10:19:30,990 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:19:30,990 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:19:31,739 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:19:31.739758', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:19:31,740 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:35:26,092 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 10:35:26,093 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 10:35:26,178 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:35:26,178 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:35:26,569 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:35:26.569506', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:35:26,586 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:35:53,514 : INFO : Analysis completed successfully.
+2025-12-31 10:36:13,987 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 10:36:13,988 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 10:36:14,049 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:36:14,049 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:36:14,440 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:36:14.440653', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:36:14,441 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:36:24,948 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 10:36:24,948 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 10:36:25,002 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:36:25,002 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:36:25,390 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:36:25.389896', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:36:25,390 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:38:41,682 : INFO : Analysis completed successfully.
+2025-12-31 10:40:50,900 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:40:50,900 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:40:50,958 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:40:50,959 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:40:51,383 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:40:51.381533', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:40:51,384 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:40:51,840 : INFO : Analysis completed successfully.
+2025-12-31 10:42:24,097 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:42:24,097 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:42:24,186 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:42:24,186 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:42:24,593 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:42:24.590560', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:42:24,593 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:42:25,056 : INFO : Analysis completed successfully.
+2025-12-31 10:43:04,385 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:43:04,385 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:43:04,446 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:43:04,446 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:43:04,900 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:43:04.898451', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:43:04,901 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:43:05,379 : INFO : Analysis completed successfully.
+2025-12-31 10:44:06,240 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:44:06,240 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:44:06,299 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:44:06,300 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:44:06,700 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:44:06.697828', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:44:06,700 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:44:07,134 : INFO : Analysis completed successfully.
+2025-12-31 10:44:52,519 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:44:52,519 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:44:52,577 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:44:52,577 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:44:52,974 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:44:52.972256', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:44:52,974 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:44:53,433 : INFO : Analysis completed successfully.
+2025-12-31 10:45:17,810 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:45:17,810 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:45:17,869 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:45:17,869 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:45:18,294 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:45:18.291995', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:45:18,295 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:45:18,793 : INFO : Analysis completed successfully.
+2025-12-31 10:45:38,494 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:45:38,494 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:45:38,554 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:45:38,554 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:45:38,967 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:45:38.964940', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:45:38,967 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:45:39,462 : INFO : Analysis completed successfully.
+2025-12-31 10:46:32,390 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:46:32,390 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:46:32,448 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:46:32,448 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:46:32,848 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:46:32.845813', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:46:32,848 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:46:33,292 : INFO : Analysis completed successfully.
+2025-12-31 10:47:27,611 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:47:27,611 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:47:27,673 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:47:27,673 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:47:28,071 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:47:28.069308', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:47:28,071 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:47:28,518 : INFO : Analysis completed successfully.
+2025-12-31 10:48:29,909 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 10:48:29,910 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 10:48:29,968 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:48:29,968 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:48:30,372 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:48:30.372667', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:48:30,373 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:49:11,188 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 10:49:11,189 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 10:49:11,246 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:49:11,246 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:49:11,636 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:49:11.636458', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:49:11,636 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:49:38,148 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:49:38,148 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:49:38,207 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:49:38,208 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:49:38,631 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:49:38.628776', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:49:38,631 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:49:42,955 : INFO : Analysis completed successfully.
+2025-12-31 10:51:33,539 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 10:51:33,540 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 10:51:33,591 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:51:33,592 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:51:33,987 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:51:33.983808', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:51:33,987 : INFO : Executing Part B analysis tasks...
+2025-12-31 10:51:36,196 : INFO : Analysis completed successfully.
+2025-12-31 10:58:43,271 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 10:58:43,271 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 10:58:43,332 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 10:58:43,332 : INFO : setting ignored attribute cum_table to None
+2025-12-31 10:58:43,720 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T10:58:43.720830', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 10:58:43,721 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:00:31,265 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 11:00:31,266 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 11:00:31,313 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:00:31,314 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:00:31,706 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:00:31.706288', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:00:31,706 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:40:02,152 : INFO : Loading existing model from ./output_dir/knesset_word2vec.model...
+2025-12-31 11:40:02,154 : INFO : loading Word2Vec object from ./output_dir/knesset_word2vec.model
+2025-12-31 11:40:02,242 : INFO : loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:40:02,242 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:40:02,630 : INFO : Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:40:02.630452', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:40:02,630 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:40:22,602 : INFO : Analysis completed successfully.
+2025-12-31 11:42:09,481 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:42:09,482 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:42:09,551 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:42:09,551 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:42:09,962 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:42:09.959538', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:42:09,962 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:42:12,270 : INFO : Analysis completed successfully.
+2025-12-31 11:42:58,711 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:42:58,712 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:42:58,780 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:42:58,780 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:42:59,186 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:42:59.183655', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:42:59,186 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:43:01,429 : INFO : Analysis completed successfully.
+2025-12-31 11:46:33,033 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:46:33,033 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:46:33,097 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:46:33,097 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:46:33,506 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:46:33.503687', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:46:33,506 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:46:35,686 : INFO : Analysis completed successfully.
+2025-12-31 11:46:52,946 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:46:52,947 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:46:53,030 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:46:53,030 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:46:53,484 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:46:53.482152', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:46:53,484 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:46:55,932 : INFO : Analysis completed successfully.
+2025-12-31 11:48:56,715 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:48:56,716 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:48:56,803 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:48:56,804 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:48:57,228 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:48:57.225841', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:48:57,228 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:48:58,867 : ERROR : Semantic substitution module encountered an error: "Key '' not present in vocabulary"
+2025-12-31 11:48:58,867 : INFO : Analysis completed successfully.
+2025-12-31 11:49:13,290 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:49:13,290 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:49:13,337 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:49:13,338 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:49:13,758 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:49:13.756312', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:49:13,759 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:49:16,001 : ERROR : Semantic substitution module encountered an error: "Key '' not present in vocabulary"
+2025-12-31 11:49:16,001 : INFO : Analysis completed successfully.
+2025-12-31 11:49:20,750 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:49:20,750 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:49:20,801 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:49:20,801 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:49:21,229 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:49:21.227193', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:49:21,230 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:49:23,449 : INFO : Analysis completed successfully.
+2025-12-31 11:50:02,996 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:50:02,996 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:50:03,044 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:50:03,044 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:50:03,455 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:50:03.452072', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:50:03,455 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:50:05,656 : INFO : Analysis completed successfully.
+2025-12-31 11:54:11,678 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:54:11,678 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:54:11,738 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:54:11,738 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:54:12,157 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:54:12.154714', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:54:12,157 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:54:13,768 : ERROR : Semantic substitution module encountered an error: "Key 'אדרוש' not present in vocabulary"
+2025-12-31 11:54:13,768 : INFO : Analysis completed successfully.
+2025-12-31 11:56:40,111 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:56:40,112 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:56:40,173 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:56:40,174 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:56:40,579 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:56:40.576943', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:56:40,579 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:56:42,824 : INFO : Analysis completed successfully.
+2025-12-31 11:57:18,259 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:57:18,259 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:57:18,321 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:57:18,321 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:57:18,727 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:57:18.725312', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:57:18,727 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:57:20,961 : INFO : Analysis completed successfully.
+2025-12-31 11:57:39,620 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 11:57:39,620 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 11:57:39,694 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 11:57:39,694 : INFO : setting ignored attribute cum_table to None
+2025-12-31 11:57:40,107 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T11:57:40.105350', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 11:57:40,108 : INFO : Executing Part B analysis tasks...
+2025-12-31 11:57:42,387 : INFO : Analysis completed successfully.
+2025-12-31 12:00:40,650 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:00:40,651 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:00:40,721 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:00:40,721 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:00:41,150 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:00:41.147812', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:00:41,150 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:00:43,333 : ERROR : Semantic substitution module encountered an error: "Key 'לכו-האדם' not present in vocabulary"
+2025-12-31 12:00:43,334 : INFO : Analysis completed successfully.
+2025-12-31 12:00:51,842 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:00:51,842 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:00:51,910 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:00:51,910 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:00:52,342 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:00:52.340291', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:00:52,343 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:00:54,648 : ERROR : Semantic substitution module encountered an error: "Key 'לכוח-האדם' not present in vocabulary"
+2025-12-31 12:00:54,648 : INFO : Analysis completed successfully.
+2025-12-31 12:01:06,252 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:01:06,252 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:01:06,314 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:01:06,315 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:01:06,726 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:01:06.723719', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:01:06,726 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:01:08,943 : ERROR : Semantic substitution module encountered an error: "Key '' not present in vocabulary"
+2025-12-31 12:01:08,943 : INFO : Analysis completed successfully.
+2025-12-31 12:01:21,080 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:01:21,080 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:01:21,141 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:01:21,142 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:01:21,539 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:01:21.536855', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:01:21,539 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:01:23,657 : ERROR : Semantic substitution module encountered an error: "Key '' not present in vocabulary"
+2025-12-31 12:01:23,658 : INFO : Analysis completed successfully.
+2025-12-31 12:02:01,848 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:02:01,848 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:02:01,906 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:02:01,906 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:02:02,353 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:02:02.350943', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:02:02,353 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:02:04,562 : INFO : Analysis completed successfully.
+2025-12-31 12:02:18,440 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:02:18,440 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:02:18,506 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:02:18,507 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:02:18,918 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:02:18.915931', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:02:18,918 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:02:21,184 : INFO : Analysis completed successfully.
+2025-12-31 12:02:54,227 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:02:54,227 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:02:54,288 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:02:54,288 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:02:54,695 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:02:54.692990', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:02:54,695 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:02:56,932 : INFO : Analysis completed successfully.
+2025-12-31 12:03:14,689 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:03:14,689 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:03:14,751 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:03:14,752 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:03:15,152 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:03:15.149646', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:03:15,152 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:03:17,372 : INFO : Analysis completed successfully.
+2025-12-31 12:03:43,279 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:03:43,279 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:03:43,350 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:03:43,351 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:03:43,757 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:03:43.755445', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:03:43,758 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:03:45,932 : INFO : Analysis completed successfully.
+2025-12-31 12:04:07,882 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:04:07,882 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:04:07,945 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:04:07,945 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:04:08,354 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:04:08.351619', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:04:08,354 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:04:10,500 : INFO : Analysis completed successfully.
+2025-12-31 12:04:21,242 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:04:21,243 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:04:21,294 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:04:21,295 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:04:21,712 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:04:21.709556', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:04:21,712 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:04:23,930 : INFO : Analysis completed successfully.
+2025-12-31 12:04:42,331 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:04:42,331 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:04:42,393 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:04:42,393 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:04:42,825 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:04:42.823165', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:04:42,825 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:04:45,113 : INFO : Analysis completed successfully.
+2025-12-31 12:04:58,956 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:04:58,956 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:04:59,020 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:04:59,020 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:04:59,452 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:04:59.449665', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:04:59,452 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:05:01,109 : INFO : Analysis completed successfully.
+2025-12-31 12:05:11,529 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:05:11,529 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:05:11,598 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:05:11,598 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:05:12,049 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:05:12.047320', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:05:12,050 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:05:14,404 : INFO : Analysis completed successfully.
+2025-12-31 12:05:23,604 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:05:23,605 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:05:23,655 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:05:23,655 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:05:24,086 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:05:24.083869', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:05:24,086 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:05:26,244 : INFO : Analysis completed successfully.
+2025-12-31 12:05:41,813 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:05:41,813 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:05:41,859 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:05:41,860 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:05:42,287 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:05:42.284849', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:05:42,287 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:05:44,590 : INFO : Analysis completed successfully.
+2025-12-31 12:07:28,758 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:07:28,758 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:07:28,825 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:07:28,825 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:07:29,264 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:07:29.262311', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:07:29,264 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:07:31,525 : INFO : Analysis completed successfully.
+2025-12-31 12:07:45,372 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:07:45,372 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:07:45,439 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:07:45,439 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:07:45,905 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:07:45.902283', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:07:45,905 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:07:48,151 : INFO : Analysis completed successfully.
+2025-12-31 12:08:06,115 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:08:06,115 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:08:06,177 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:08:06,178 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:08:06,591 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:08:06.588765', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:08:06,591 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:08:08,975 : INFO : Analysis completed successfully.
+2025-12-31 12:08:17,296 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:08:17,296 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:08:17,359 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:08:17,359 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:08:17,803 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:08:17.800545', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:08:17,803 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:08:20,158 : INFO : Analysis completed successfully.
+2025-12-31 12:08:34,843 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:08:34,844 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:08:34,906 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:08:34,906 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:08:35,328 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:08:35.325655', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:08:35,328 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:08:37,675 : INFO : Analysis completed successfully.
+2025-12-31 12:08:52,568 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:08:52,569 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:08:52,629 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:08:52,629 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:08:53,058 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:08:53.056217', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:08:53,059 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:08:55,442 : INFO : Analysis completed successfully.
+2025-12-31 12:10:03,862 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:10:03,862 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:10:03,932 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:10:03,932 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:10:04,362 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:10:04.359299', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:10:04,362 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:10:06,802 : INFO : Analysis completed successfully.
+2025-12-31 12:10:17,823 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:10:17,823 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:10:17,928 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:10:17,928 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:10:18,351 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:10:18.349048', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:10:18,351 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:10:20,732 : INFO : Analysis completed successfully.
+2025-12-31 12:10:31,081 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:10:31,081 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:10:31,159 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:10:31,159 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:10:31,584 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:10:31.581911', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:10:31,584 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:10:34,209 : INFO : Analysis completed successfully.
+2025-12-31 12:10:42,298 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:10:42,298 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:10:42,357 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:10:42,357 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:10:42,783 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:10:42.781042', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:10:42,783 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:10:45,224 : INFO : Analysis completed successfully.
+2025-12-31 12:10:52,114 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:10:52,115 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:10:52,166 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:10:52,166 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:10:52,590 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:10:52.588174', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:10:52,590 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:10:54,912 : INFO : Analysis completed successfully.
+2025-12-31 12:11:09,814 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:11:09,814 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:11:09,874 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:11:09,874 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:11:10,316 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:11:10.313626', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:11:10,317 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:11:12,711 : INFO : Analysis completed successfully.
+2025-12-31 12:11:22,582 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:11:22,583 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:11:22,643 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:11:22,644 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:11:23,063 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:11:23.060788', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:11:23,063 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:11:25,453 : INFO : Analysis completed successfully.
+2025-12-31 12:11:45,133 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:11:45,134 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:11:45,191 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:11:45,191 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:11:45,611 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:11:45.608683', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:11:45,611 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:11:47,954 : INFO : Analysis completed successfully.
+2025-12-31 12:12:22,620 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:12:22,620 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:12:22,680 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:12:22,680 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:12:23,108 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:12:23.106353', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:12:23,109 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:12:25,601 : INFO : Analysis completed successfully.
+2025-12-31 12:12:46,802 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:12:46,802 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:12:46,871 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:12:46,871 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:12:47,286 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:12:47.283805', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:12:47,286 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:12:49,552 : INFO : Analysis completed successfully.
+2025-12-31 12:13:19,746 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:13:19,747 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:13:19,813 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:13:19,814 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:13:20,254 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:13:20.252312', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:13:20,254 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:13:22,553 : INFO : Analysis completed successfully.
+2025-12-31 12:16:01,522 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:16:01,522 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:16:01,594 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:16:01,594 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:16:02,030 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:16:02.027631', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:16:02,030 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:16:04,475 : INFO : Analysis completed successfully.
+2025-12-31 12:18:41,707 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:18:41,707 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:18:41,778 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:18:41,779 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:18:42,272 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:18:42.270098', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:18:42,272 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:18:44,768 : ERROR : Semantic substitution module encountered an error: "Key '' not present in vocabulary"
+2025-12-31 12:18:44,769 : INFO : Analysis completed successfully.
+2025-12-31 12:19:16,397 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:19:16,397 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:19:16,467 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:19:16,468 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:19:16,890 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:19:16.888537', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:19:16,891 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:19:19,061 : INFO : Analysis completed successfully.
+2025-12-31 12:19:41,081 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:19:41,081 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:19:41,139 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:19:41,140 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:19:41,553 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:19:41.551259', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:19:41,554 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:19:43,968 : INFO : Analysis completed successfully.
+2025-12-31 12:20:02,658 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:20:02,658 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:20:02,717 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:20:02,717 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:20:03,144 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:20:03.141813', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:20:03,144 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:20:04,674 : INFO : Analysis completed successfully.
+2025-12-31 12:20:48,447 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:20:48,447 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:20:48,507 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:20:48,507 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:20:48,950 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:20:48.947934', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:20:48,950 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:20:51,151 : INFO : Analysis completed successfully.
+2025-12-31 12:23:46,111 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:23:46,111 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:23:46,183 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:23:46,184 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:23:46,617 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:23:46.615224', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:23:46,617 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:23:48,859 : INFO : Analysis completed successfully.
+2025-12-31 12:24:25,224 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:24:25,225 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:24:25,288 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:24:25,288 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:24:25,754 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:24:25.751533', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:24:25,754 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:24:28,038 : INFO : Analysis completed successfully.
+2025-12-31 12:24:41,303 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:24:41,303 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:24:41,367 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:24:41,368 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:24:41,794 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:24:41.791932', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:24:41,794 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:24:43,999 : INFO : Analysis completed successfully.
+2025-12-31 12:24:51,071 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:24:51,071 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:24:51,129 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:24:51,129 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:24:51,535 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:24:51.532630', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:24:51,535 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:24:53,736 : INFO : Analysis completed successfully.
+2025-12-31 12:25:28,315 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:25:28,315 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:25:28,375 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:25:28,376 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:25:28,777 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:25:28.775739', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:25:28,778 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:25:30,905 : INFO : Analysis completed successfully.
+2025-12-31 12:25:38,202 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:25:38,202 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:25:38,263 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:25:38,263 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:25:38,663 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:25:38.660573', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:25:38,663 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:25:40,753 : INFO : Analysis completed successfully.
+2025-12-31 12:54:22,277 : INFO : Loading existing model from output_dir/knesset_word2vec.model...
+2025-12-31 12:54:22,278 : INFO : loading Word2Vec object from output_dir/knesset_word2vec.model
+2025-12-31 12:54:22,363 : INFO : loading wv recursively from output_dir/knesset_word2vec.model.wv.* with mmap=None
+2025-12-31 12:54:22,363 : INFO : setting ignored attribute cum_table to None
+2025-12-31 12:54:22,767 : INFO : Word2Vec lifecycle event {'fname': 'output_dir/knesset_word2vec.model', 'datetime': '2025-12-31T12:54:22.754187', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+2025-12-31 12:54:22,767 : INFO : Executing Part B analysis tasks...
+2025-12-31 12:54:25,141 : INFO : Analysis completed successfully.
