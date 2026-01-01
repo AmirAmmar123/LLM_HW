@@ -17,7 +17,9 @@ logging.basicConfig(
     ]
 )
 
+SELECTED_INDICES = [1200, 4600, 8900, 2020, 5001, 6100, 100, 90, 5, 20]
 
+WORDS = ["יום", "אישה", "דרך", "ארוך", "תוכנית", "אוהב", "אסור", "איתן", "זכות"] 
 
 REPLACEMENT_TASKS = [
             {
@@ -159,18 +161,19 @@ class Word2VecManager:
 
     def run_word_similarity(self, output_dir: str):
         """
-        Identifies the top 5 most similar words for a predefined list.
-        Outputs results to 'knesset_similar_words.txt' using the required format.
+        Identifies top 5 similar words using concise list comprehensions.
+        Calculates manual similarity scores as required in Part B, Section A .
         """
-        words = ["יום", "אישה", "דרך", "ארוך", "תוכנית", "אוהב", "אסור", "איתן", "זכות"] 
-        output_path = os.path.join(output_dir, "knesset_similar_words.txt")
+        vocab = self.model.wv.index_to_key
         
-        with open(output_path, 'w', encoding='utf-8') as f:
-            for word in words:
-                if word in self.model.wv:
-                    similars = self.model.wv.most_similar(word, topn=5)
-                    line = f"{word}: " + ", ".join([f"({w}, {s:.4f})" for w, s in similars])
-                    f.write(line + "\n")
+        try:
+            with open(os.path.join(output_dir, "knesset_similar_words.txt"), 'w', encoding='utf-8') as f:
+                for t in [w for w in WORDS if w in self.model.wv]:
+                    top = sorted([(v, self.model.wv.similarity(t, v)) for v in vocab if v != t], key=lambda x: x[1], reverse=True)[:5]
+                    f.write(f"{t}: {', '.join([f'({w}, {s:.4f})' for w, s in top])}\n")
+        except Exception as e:
+            logging.error(f"Error in concise similarity task: {e}")
+
 
     def run_sentence_similarity(self, corpus_samples: List[dict], output_dir: str):
         """
@@ -192,14 +195,6 @@ class Word2VecManager:
         embeddings_matrix = np.array([item['emb'] for item in valid_data])
         output_path = os.path.join(output_dir, "knesset_similar_sentences.txt")
         
-        SELECTED_INDICES = [1200, 4600, 8900, 2020, 5001, 6100, 100, 90, 5, 20]
-        # with open(output_path, 'w', encoding='utf-8') as f:
-        #     for i in range(min(10, len(valid_data))):
-        #         target_emb = valid_data[i]['emb'].reshape(1, -1)
-        #         similarities = cosine_similarity(target_emb, embeddings_matrix)[0]
-        #         similarities[i] = -1
-        #         best_idx = np.argmax(similarities)
-        #         f.write(f"{valid_data[i]['raw']}: most similar sentence: {valid_data[best_idx]['raw']}\n")
 
         with open(output_path, 'w', encoding='utf-8') as f:
             for idx in SELECTED_INDICES:
@@ -209,7 +204,6 @@ class Word2VecManager:
                 target_emb = valid_data[idx]['emb'].reshape(1, -1)
                 similarities = cosine_similarity(target_emb, embeddings_matrix)[0]
 
-                # prevent self-match
                 similarities[idx] = -1
 
                 best_idx = np.argmax(similarities)
