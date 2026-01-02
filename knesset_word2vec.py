@@ -17,7 +17,7 @@ logging.basicConfig(
     ]
 )
 
-SELECTED_INDICES = [1200, 4600, 8900, 2020, 5001, 6100, 100, 90, 5, 20]
+SELECTED_INDICES = [230, 1118, 6605, 8111, 3954, 4049, 52, 1066, 162, 1628]
 
 WORDS = ["יום", "אישה", "דרך", "ארוך", "תוכנית", "אוהב", "אסור", "איתן", "זכות"] 
 
@@ -289,7 +289,7 @@ def main():
         manager.run_word_similarity(args.output_dir)
         
         corpus_iterator = KnessetCorpusIterator(args.corpus_path)
-        raw_samples = corpus_iterator.get_raw_sentences(limit=50000)
+        raw_samples = corpus_iterator.get_raw_sentences(limit=120000)
         manager.run_sentence_similarity(raw_samples, args.output_dir)
         
         manager.run_red_words(args.output_dir)

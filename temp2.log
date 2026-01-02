@@ -1,0 +1,50 @@
+11:47:00 - INFO - Loading Word2Vec model...
+11:47:02 - INFO - loading Word2Vec object from ./output_dir/knesset_word2vec.model
+11:47:02 - INFO - loading wv recursively from ./output_dir/knesset_word2vec.model.wv.* with mmap=None
+11:47:02 - INFO - setting ignored attribute cum_table to None
+11:47:03 - INFO - Word2Vec lifecycle event {'fname': './output_dir/knesset_word2vec.model', 'datetime': '2026-01-02T11:47:03.527374', 'gensim': '4.4.0', 'python': '3.12.3 (main, Jun 30 2025, 22:48:39) [GCC 13.3.0]', 'platform': 'Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39', 'event': 'loaded'}
+11:47:05 - INFO - Finding top speakers...
+11:47:13 - INFO - Top speakers: ראובן ריבלין, א' בורג
+11:47:16 - INFO - Finding speaker name variations...
+11:47:19 - INFO - Speaker 1 aliases: {"ר' ריבלין", 'ראובן ריבלין', 'רובי ריבלין'}
+11:47:19 - INFO - Speaker 2 aliases: {'אברהם בורג', "א' בורג"}
+11:47:21 - INFO - Loading and preparing dataset...
+11:47:23 - INFO - Loaded sentences: class0=3509, class1=2487
+11:47:24 - INFO - Balanced dataset size: 4974
+11:47:24 - INFO - Sentence embedding matrix shape: (4974, 50)
+11:47:31 - INFO - Running KNN classification...
+11:47:32 - INFO - k=1: f1_macro=0.7957
+11:47:32 - INFO - k=2: f1_macro=0.8073
+11:47:32 - INFO - k=3: f1_macro=0.8018
+11:47:32 - INFO - k=4: f1_macro=0.8069
+11:47:32 - INFO - k=5: f1_macro=0.8024
+11:47:32 - INFO - k=6: f1_macro=0.8013
+11:47:32 - INFO - k=7: f1_macro=0.7977
+11:47:32 - INFO - k=8: f1_macro=0.8018
+11:47:32 - INFO - k=9: f1_macro=0.7989
+11:47:32 - INFO - k=10: f1_macro=0.7991
+11:47:32 - INFO - k=11: f1_macro=0.7982
+11:47:32 - INFO - k=12: f1_macro=0.7993
+11:47:32 - INFO - k=13: f1_macro=0.8002
+11:47:33 - INFO - k=14: f1_macro=0.7956
+11:47:33 - INFO - k=15: f1_macro=0.7942
+11:47:33 - INFO - k=16: f1_macro=0.7894
+11:47:33 - INFO - k=17: f1_macro=0.7894
+11:47:33 - INFO - k=18: f1_macro=0.7895
+11:47:33 - INFO - k=19: f1_macro=0.7909
+11:47:33 - INFO - k=20: f1_macro=0.7880
+11:47:33 - INFO - k=21: f1_macro=0.7875
+11:47:33 - INFO - Best k = 2 (score=0.8073)
+11:47:33 - INFO - 
+===== Binary Classification | Sentence Embeddings (Word2Vec) =====
+11:47:33 - INFO - Best k chosen by CV: 2
+11:47:33 - INFO -               precision    recall  f1-score   support
+
+           0    0.75429   0.91838   0.82829      2487
+           1    0.89568   0.70084   0.78637      2487
+
+    accuracy                        0.80961      4974
+   macro avg    0.82499   0.80961   0.80733      4974
+weighted avg    0.82499   0.80961   0.80733      4974
+
+11:47:35 - INFO - Program finished successfully
