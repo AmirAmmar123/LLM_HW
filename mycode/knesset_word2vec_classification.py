@@ -199,12 +199,9 @@ def run_knn(task):
     knn = KNeighborsClassifier(n_neighbors=best_k)
     y_pred = cross_val_predict(knn, X, y, cv=5)
 
-    # logger.info("\n===== Binary Classification | Sentence Embeddings (Word2Vec) =====")
-    # logger.info(f"Best k chosen by CV: {best_k}")
-    # logger.info(classification_report(y, y_pred, digits=5))
-    # print("\n===== Binary Classification | Sentence Embeddings (Word2Vec) =====")
-    print(f"Classification repot:")
-    print(classification_report(y, y_pred, digits=5))
+    logger.info("\n===== Binary Classification | Sentence Embeddings (Word2Vec) =====")
+    logger.info(f"Best k chosen by CV: {best_k}")
+    logger.info(classification_report(y, y_pred, digits=5))
 
 
 if __name__ == "__main__":
