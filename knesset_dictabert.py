@@ -45,7 +45,7 @@ def run_dictabert(input_path, output_dir):
 
                 f_out.write(f"masked_sentence: {original_masked_sent}\n")
                 f_out.write(f"dictaBERT_sentence: {final_sentence}\n")
-                f_out.write(f"dictaBERT_tokens: {', '.join(predicted_tokens)}\n")
+                f_out.write(f"dictaBERT tokens: {','.join(predicted_tokens)}\n")
                 
     except Exception as e:
         print(f"An error occurred: {e}")
