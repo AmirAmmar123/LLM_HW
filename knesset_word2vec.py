@@ -260,11 +260,11 @@ class Word2VecManager:
                                 break
       
                         current_sentence = current_sentence.replace(original_word, chosen_substitute)
-                        applied_replacements.append(f"({original_word}: {chosen_substitute})")
+                        applied_replacements.append(f"({original_word}:{chosen_substitute})")
                     
 
                     f.write(f"{item['id']}: {item['orig']}: {current_sentence}\n")
-                    f.write(f"replaced words: {', '.join(applied_replacements)}\n")
+                    f.write(f"replaced words: {','.join(applied_replacements)}\n")
                     
         except Exception as e:
             logging.error(f"Semantic substitution module encountered an error: {e}")
