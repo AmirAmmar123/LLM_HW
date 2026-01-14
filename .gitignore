@@ -2,3 +2,6 @@ HW1.pdf
 knesset_protocols
 .vscode
 venv/
+imdb_subset/
+debug_saved_model/
+results/

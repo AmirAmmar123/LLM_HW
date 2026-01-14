@@ -13,117 +13,120 @@ from sklearn.metrics import accuracy_score
 
 
 
-DEBUG = True               
+DEBUG = False               
 DEBUG_MODEL_DIR = "./debug_saved_model"
 
 
 def main():
+    try:
+        if len(sys.argv) < 2:
+            print("Usage: python bert_classification_finetuning.py <path/to/imdb_subset>")
+            return
 
-    if len(sys.argv) < 2:
-        print("Usage: python bert_classification_finetuning.py <path/to/imdb_subset>")
-        return
-
-    subset_path = sys.argv[1]
-
-
-    if os.path.exists(subset_path):
-        if DEBUG:
-            print(f"Loading dataset from disk: {subset_path}")
-        subset = load_from_disk(subset_path)
-    else:
-        if DEBUG:
-            print("Dataset not found. Downloading IMDB and creating subset...")
-        dataset = load_dataset("imdb")
-        subset = dataset["train"].shuffle(seed=42).select(range(500))
-        subset.save_to_disk(subset_path)
-
-    model_name = "bert-base-uncased"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+        subset_path = sys.argv[1]
 
 
-    subset = subset.rename_column("label", "labels")
+        if os.path.exists(subset_path):
+            if DEBUG:
+                print(f"Loading dataset from disk: {subset_path}")
+            subset = load_from_disk(subset_path)
+        else:
+            if DEBUG:
+                print("Dataset not found. Downloading IMDB and creating subset...")
+            dataset = load_dataset("imdb")
+            subset = dataset["train"].shuffle(seed=42).select(range(500))
+            subset.save_to_disk(subset_path)
 
-    def tokenize_function(examples):
-        return tokenizer(
-            examples["text"],
-            padding="max_length",
-            truncation=True,
-            max_length=256,
-        )
-
-    tokenized_dataset = subset.map(
-        tokenize_function,
-        batched=True,
-        remove_columns=["text"]
-    )
+        model_name = "bert-base-uncased"
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 
-    split_dataset = tokenized_dataset.train_test_split(
-        test_size=0.2,
-        seed=42
-    )
-    train_dataset = split_dataset["train"]
-    eval_dataset = split_dataset["test"]
+        subset = subset.rename_column("label", "labels")
 
-    if DEBUG and os.path.exists(DEBUG_MODEL_DIR):
-        print("Loading model from DEBUG directory...")
-        model = AutoModelForSequenceClassification.from_pretrained(DEBUG_MODEL_DIR)
-    else:
-        model = AutoModelForSequenceClassification.from_pretrained(
-            model_name,
-            num_labels=2
+        def tokenize_function(examples):
+            return tokenizer(
+                examples["text"],
+                padding="max_length",
+                truncation=True,
+                max_length=256,
+            )
+
+        tokenized_dataset = subset.map(
+            tokenize_function,
+            batched=True,
+            remove_columns=["text"]
         )
 
 
-    def compute_metrics(eval_pred):
-        logits = eval_pred.predictions
-        labels = eval_pred.label_ids
-        predictions = np.argmax(logits, axis=-1)
-        return {"accuracy": accuracy_score(labels, predictions)}
+        split_dataset = tokenized_dataset.train_test_split(
+            test_size=0.2,
+            seed=42
+        )
+        train_dataset = split_dataset["train"]
+        eval_dataset = split_dataset["test"]
+
+        if DEBUG and os.path.exists(DEBUG_MODEL_DIR):
+            print("Loading model from DEBUG directory...")
+            model = AutoModelForSequenceClassification.from_pretrained(DEBUG_MODEL_DIR)
+        else:
+            model = AutoModelForSequenceClassification.from_pretrained(
+                model_name,
+                num_labels=2
+            )
 
 
-    training_args = TrainingArguments(
-        output_dir="./results",
-        eval_strategy="epoch",      
-        save_strategy="epoch",      
-        learning_rate=2e-5,
-        per_device_train_batch_size=8,
-        per_device_eval_batch_size=8,
-        num_train_epochs=3,
-        weight_decay=0.01,
-        logging_dir="./logs",
-        load_best_model_at_end=True,
-        report_to="none",
-    )
+        def compute_metrics(eval_pred):
+            logits = eval_pred.predictions
+            labels = eval_pred.label_ids
+            predictions = np.argmax(logits, axis=-1)
+            return {"accuracy": accuracy_score(labels, predictions)}
+
+
+        training_args = TrainingArguments(
+            output_dir="./results",
+            eval_strategy="epoch",      
+            save_strategy="epoch",      
+            learning_rate=2e-5,
+            per_device_train_batch_size=8,
+            per_device_eval_batch_size=8,
+            num_train_epochs=3,
+            weight_decay=0.01,
+            logging_dir="./logs",
+            load_best_model_at_end=True,
+            report_to="none",
+        )
 
 
 
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        eval_dataset=eval_dataset,
-        compute_metrics=compute_metrics,
-    )
+        trainer = Trainer(
+            model=model,
+            args=training_args,
+            train_dataset=train_dataset,
+            eval_dataset=eval_dataset,
+            compute_metrics=compute_metrics,
+        )
 
-    if DEBUG:
-        print("Starting training...")
-    trainer.train()
-
-
-    if DEBUG:
-        os.makedirs(DEBUG_MODEL_DIR, exist_ok=True)
-        trainer.save_model(DEBUG_MODEL_DIR)
-        tokenizer.save_pretrained(DEBUG_MODEL_DIR)
-        print("Model saved (DEBUG mode).")
+        if DEBUG:
+            print("Starting training...")
+        trainer.train()
 
 
-    if DEBUG:
-        print("Evaluating on test set...")
-    metrics = trainer.evaluate()
+        if DEBUG:
+            os.makedirs(DEBUG_MODEL_DIR, exist_ok=True)
+            trainer.save_model(DEBUG_MODEL_DIR)
+            tokenizer.save_pretrained(DEBUG_MODEL_DIR)
+            print("Model saved (DEBUG mode).")
 
-    accuracy = metrics["eval_accuracy"]
-    print(f"Accuracy: {accuracy}")
+
+        if DEBUG:
+            print("Evaluating on test set...")
+        metrics = trainer.evaluate()
+
+        accuracy = metrics["eval_accuracy"]
+        print(f"Accuracy: {accuracy}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
