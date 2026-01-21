@@ -11,6 +11,7 @@ from transformers import (
 )
 from datasets import load_from_disk
 
+
 def tokenize_reviews(dataset, tokenizer, max_length=150): 
     if tokenizer.pad_token is None: 
         tokenizer.pad_token = tokenizer.eos_token 
@@ -22,8 +23,11 @@ def tokenize_reviews(dataset, tokenizer, max_length=150):
     tokenized_dataset = tokenized_dataset.rename_column("label", "labels")  
     return tokenized_dataset 
 
+
+FLAG = False 
+SAMPLE = 100 #TODO: change back to 100
 def main():
-    FLAG = True 
+
 
     if len(sys.argv) != 4:
         print("Usage: python gpt_generation_finetuning.py <imdb_subset_path> <output_file_path> <saved_models_dir>")
@@ -45,8 +49,8 @@ def main():
     if FLAG:
         print("Splitting dataset into positive and negative subsets...")
     
-    positive_dataset = dataset.filter(lambda x: x['label'] == 1).shuffle(seed=42).select(range(100))
-    negative_dataset = dataset.filter(lambda x: x['label'] == 0).shuffle(seed=42).select(range(100))
+    positive_dataset = dataset.filter(lambda x: x['label'] == 1).shuffle(seed=42).select(range(SAMPLE))
+    negative_dataset = dataset.filter(lambda x: x['label'] == 0).shuffle(seed=42).select(range(SAMPLE))
 
     if FLAG:
         print(f"Positive samples: {len(positive_dataset)}")

@@ -15,7 +15,7 @@ from sklearn.metrics import accuracy_score
 
 DEBUG = False               
 DEBUG_MODEL_DIR = "./debug_saved_model"
-
+SAMPLE = 500 #TODO: change to 500 later
 
 def main():
     try:
@@ -26,7 +26,7 @@ def main():
         subset_path = sys.argv[1]
 
 
-        if os.path.exists(subset_path):
+        if DEBUG and os.path.exists(subset_path):
             if DEBUG:
                 print(f"Loading dataset from disk: {subset_path}")
             subset = load_from_disk(subset_path)
@@ -34,7 +34,7 @@ def main():
             if DEBUG:
                 print("Dataset not found. Downloading IMDB and creating subset...")
             dataset = load_dataset("imdb")
-            subset = dataset["train"].shuffle(seed=42).select(range(500))
+            subset = dataset["train"].shuffle(seed=42).select(range(SAMPLE))
             subset.save_to_disk(subset_path)
 
         model_name = "bert-base-uncased"
